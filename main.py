@@ -138,6 +138,7 @@ while True:
                     mainmenu = False
                     movementground = True
                     COLOR = RED
+                    pygame.mixer.music.set_volume(0.5)
                 if x1 > 200 - r and x1 < 200 + r and y1 < 250 + r and y1 > 250 - r:
                     while r2var > 0:
                         r2var -= 0.003
@@ -158,7 +159,10 @@ while True:
                     COLOR = ORANGE
                     texttoprint = ["", 0]
                     pygame.mixer.music.load('funnylimbosong.wav')
+                    pygame.mixer.music.set_volume(0.3)
+                                                    
                     pygame.mixer.music.play(1)
+                    
         screen.blit(text, (20, 20))
         pygame.display.update()
     #orang
@@ -314,7 +318,8 @@ while True:
         
         
         if ticks == 1:
-            texttoprint = ["WASD to move. SHIFT to dash", 200]
+            texttoprint = ["Arrow keys to move. SHIFT to dash", 200]
+            pygame.mixer.music.set_pos(ticks / 60)
         if ticks < 780:
             if ticks % 75 == 0:
                 addstuff("rect", BLUE, [0, 0], [10, 300], [3, 0])
@@ -356,9 +361,11 @@ while True:
         elif ticks < 2480:
             HP += 0.1
         elif ticks == 2481:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60)
+            #pygame.mixer.music.rewind()
+            #pygame.mixer.music.set_pos(ticks / 60)
             Stuff = {}
+        #elif ticks == 2570:
+            #pygame.mixer.music.play(1, (ticks) / 60, fade_ms=1000)
         elif ticks < 2720:
             movement[0] = 50
             texttoprint = [">>>>>", 1]
@@ -390,8 +397,8 @@ while True:
         elif ticks < 4200:
             HP += 0.1
         elif ticks == 4201:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60)
+            #pygame.mixer.music.stop()
+            #pygame.mixer.music.play(1, ticks / 60)
             SpecialStuff = {}
         elif ticks < 4500:
             if ticks % 20 == 0:
@@ -430,8 +437,8 @@ while True:
                 addstuff("rect", BLUE, [0, 100], [20, 300], [8, 0])
                 addstuff("rect", BLUE, [150, 0], [300, 20], [0, 8])
         elif ticks == 5941:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60)
+            #pygame.mixer.music.stop()
+            #pygame.mixer.music.play(1, ticks / 60)
             Stuff = {}
             if x > 300:
                 movement[0] = -50
@@ -460,13 +467,13 @@ while True:
                 addstuff("homingaccelcircle", BLUE, [000, 200], [10],[4, random.randint(-2, 2)])
         elif ticks == 7081:
             HP += 10
-            pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60)
+            #pygame.mixer.music.stop()
+            #pygame.mixer.music.play(1, ticks / 60)
         elif ticks < 7100:
             HP += 0.1
         elif ticks == 7101:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60)
+            #pygame.mixer.music.stop()
+            #pygame.mixer.music.play(1, ticks / 60)
             Stuff = {}
             HP += 0.1
         elif ticks < 7120:
@@ -512,6 +519,7 @@ while True:
             if ticks%3 == 0:
                 addstuff("circle", RED, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5])
                 addstuff("circle", BLACK, [0, y], [10], [5, 0])
+        
         elif ticks < 10330:
             if ticks%60 == 0:
                 addstuff("rect", BLUE, [0, 0], [300, 20], [0, 5])
@@ -526,9 +534,11 @@ while True:
                 unitvect = makeunitvector([cords1[0]-x, cords1[1]-y])
                 bruhwhyisthisactuallycomplicated = [x*-15 for x in makeunitvector([cords1[0]-x, cords1[1]-y])]
                 addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0], -unitvect[1], 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
+        #elif ticks == 10440:
+        #    pygame.mixer.music.fadeout(3500)
         elif ticks == 10450:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60)
+            #pygame.mixer.music.stop()
+            pygame.mixer.music.play(1, ticks / 60, fade_ms=500)
             texttoprint = ["FOCUS", 100]
             addspecialstuff("rect", [[RED, 100], [RED, 650], [RED, 50]], [0,0], [40, 40],
                             [[11, 1, 50], [0, 0, 50], [0, 10, 10], [0, 0, 10], [0, 10, 10],
@@ -1213,5 +1223,6 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
 
 
