@@ -61,17 +61,17 @@ SpecialStuff = {}
 #cords: the place where the object is
 #size: the size of the object
 #vector: the number added to cords every frame. Special Stuff has a path outlined in it as [[x, y, t], [x, y, t]] where it will swap between vectors and disappear after t ticks
-int = 0
+intv = 0
 window = Window.from_display_module()
 windowpos = window.position
 clr = (0, 0, 0)
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
 def addstuff(obj, color, cords, size, vector, damage=5):
     global Stuff
-    global int
-    int += 1
+    global intv
+    intv += 1
     Stuff.update({
-        f"{obj}{int}": {
+        f"{obj}{intv}": {
             "color": color,
             "cords": cords,
             "size": size,
@@ -81,10 +81,10 @@ def addstuff(obj, color, cords, size, vector, damage=5):
     })
 def addspecialstuff(obj, color, cords, size, vector, damage):
     global SpecialStuff
-    global int
-    int += 1
+    global intv
+    intv += 1
     SpecialStuff.update({
-        f"{obj}{int}": {
+        f"{obj}{intv}": {
             "color": color,
             "cords": cords,
             "size": size,
@@ -207,7 +207,7 @@ while True:
                 if event.key == pygame.K_l:
                     pygame.mixer.music.stop()
                     ticks = 10420
-                    pygame.mixer.music.play(1, ticks / 60)
+                    pygame.mixer.music.play(1, 10420 / 60)
                 if event.key == pygame.K_x:
                     pygame.mixer.music.stop()
                     ticks = 9500
@@ -316,11 +316,14 @@ while True:
             y = 0
         
         
-        
-        if ticks == 1:
+        pos = pygame.mixer.music.get_pos()
+        ticksm = int((60 / 1000) * pos) #ticksm = music based ticks
+        if ticksm == 1:
             texttoprint = ["Arrow keys to move. SHIFT to dash", 200]
             pygame.mixer.music.set_pos(ticks / 60)
-        if ticks < 780:
+        if ticksm < 50:
+            pass
+        elif ticksm < 780:
             if ticks % 75 == 0:
                 addstuff("rect", BLUE, [0, 0], [10, 300], [3, 0])
                 addstuff("rect", BLUE, [600, 200], [10, 300], [-3, 0])
@@ -330,20 +333,20 @@ while True:
                          [random.uniform(-2, 2), 1]) 
             if (ticks + 37) % 225 == 0:
                 addstuff("rect", BLUE, [0, 0], [10, 600], [3, 0])
-        elif ticks < 980:
+        elif ticksm < 980:
             if ticks%12 == 0:
                 addspecialstuff("rect", [[BLUE, 120], [RED, 100]], [0, random.randint(0, 410)], [20, 100], [[5.8, 0, 100], [0, 0, 20], [-6, 0, 100]], 10)
-        elif ticks < 1020:
+        elif ticksm < 1020:
             HP += 0.5
-        elif ticks < 1320:
+        elif ticksm < 1320:
             if ticks%10 == 0:
                 addstuff("homingcircle", PURPLE, [0, random.randint(0, 500)], [10], [1, 0])
-        elif ticks < 1845:
+        elif ticksm < 1845:
             if ticks%10 == 0:
-                addspecialstuff("rect", [[RED, 100]], [random.randint(0,500), -600], [50, 600], [[0, 1, 50], [0, 45, 10], [0, 0, 15]], 10)
-        elif ticks < 1920:
+                addspecialstuff("rect", [[RED, 100]], [random.randint(0,600), -600], [50, 600], [[0, 1, 50], [0, 45, 10], [0, 0, 15]], 10)
+        elif ticksm < 1920:
             HP += 0.1
-        elif ticks < 2160:
+        elif ticksm < 2160:
             if ticks%50 == 0:
                 addstuff(random.choice(["homingaccelcircle", "homingaccelcircle", "homingcircle"]), PURPLE, [0, random.randint(0, 500)], [10], [1, 0])
                 addstuff(random.choice(["homingaccelcircle", "homingaccelcircle", "homingcircle"]), PURPLE, [600, random.randint(0, 500)], [10], [-1, 0])
@@ -351,56 +354,56 @@ while True:
                 addstuff(random.choice(["homingaccelcircle", "homingaccelcircle", "homingcircle"]), PURPLE, [random.randint(0,600), 0], [10], [0, 1])
                 addstuff(random.choice(["homingaccelcircle", "homingaccelcircle", "homingcircle"]), PURPLE, [random.randint(0,600), 500], [10], [0, -1])
                 
-        elif ticks < 2420:
+        elif ticksm < 2420:
             a = random.randint(1,2)
             if a == 2:
                 randvar = random.randint(0,100)
                 addspecialstuff("circle", [[BLUE, randvar], [RED, 100]], [300, 0], [8], [[0, 5, randvar], [random.randint(-5,5), 0, 100], [random.randint(-3, 3), random.randint(-1, 1), 50]], 5)
             else:
                 addstuff("circle", BLUE, [300, 0], [8], [0, 5])
-        elif ticks < 2480:
+        elif ticksm < 2480:
             HP += 0.1
-        elif ticks == 2481:
+        elif ticksm == 2481:
             #pygame.mixer.music.rewind()
             #pygame.mixer.music.set_pos(ticks / 60)
             Stuff = {}
-        #elif ticks == 2570:
+        #elif ticksm == 2570:
             #pygame.mixer.music.play(1, (ticks) / 60, fade_ms=1000)
-        elif ticks < 2720:
+        elif ticksm < 2720:
             movement[0] = 50
             texttoprint = [">>>>>", 1]
             if ticks % 25 == 0:
                 addstuff("accelrect", BLUE, [0, random.randint(0, 400)], [20, 100], [3, 0])
-        elif ticks < 3000:
+        elif ticksm < 3000:
             movement[0] = 50
             texttoprint = [">>>>>", 1]
             if ticks % 15 == 0:
                 addstuff("accelrect", BLUE, [0, random.randint(0, 400)], [20, 100], [3, 0])
             if ticks % 10 == 0:
                 addstuff("homingcircle", PURPLE, [0, random.randint(0, 500)], [10], [3, 0])                
-        elif ticks < 3360:
+        elif ticksm < 3360:
             if ticks%8 == 0:
                 addstuff("homingcircle", RED, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5], 3)
                 #addstuff("circle", PURPLE, [0, abs(math.cos(ticks/30)) * 500], [10], [5, 0])
-        elif ticks < 3500:
+        elif ticksm < 3500:
             if ticks%8 == 0:
                 addstuff("homingcircle", RED, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5], 3)
             if ticks%2 == 0:
                 addstuff("circle", BLUE, [0, abs(math.cos(ticks/30)) * 500], [10], [5, 0])
-        elif ticks < 3600:
+        elif ticksm < 3600:
             HP += 0.2
-        elif ticks < 4100:
+        elif ticksm < 4100:
             if ticks%18 == 0:
-                addspecialstuff("rect", [[RED, 100]], [random.randint(0,500), -600], [50, 600], [[0, 1, 50], [0, 45, 10], [0, 0, 15]], 10)
+                addspecialstuff("rect", [[RED, 100]], [random.randint(0,600), -600], [50, 600], [[0, 1, 50], [0, 45, 10], [0, 0, 15]], 10)
             if ticks%30 == 0:
                 addstuff("homingcircle", PURPLE, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5])
-        elif ticks < 4200:
+        elif ticksm < 4200:
             HP += 0.1
-        elif ticks == 4201:
+        elif ticksm == 4201:
             #pygame.mixer.music.stop()
             #pygame.mixer.music.play(1, ticks / 60)
             SpecialStuff = {}
-        elif ticks < 4500:
+        elif ticksm < 4500:
             if ticks % 20 == 0:
                 addstuff("accelcircle", BLUE, [600, y], [10],[-4, random.uniform(-0.1, 0.1)])
             if (ticks + 8) % 20 == 0:
@@ -409,7 +412,7 @@ while True:
                 addstuff("accelcircle", BLUE, [x, 0], [10], [random.uniform(-0.1, 0.1), 4])
             if (ticks + 24) % 20 == 0:
                 addstuff("accelcircle", BLUE, [x, 500], [10], [random.uniform(-0.1, 0.1), -4])
-        elif ticks < 4750:
+        elif ticksm < 4750:
             if ticks % 40 == 0:
                 addstuff("homingaccelcircle", BLUE, [600, y], [10],[-1, random.uniform(-2, 2)], 10)
             if (ticks + 8) % 40 == 0:
@@ -418,25 +421,25 @@ while True:
                 addstuff("homingaccelcircle", BLUE, [x, 0], [10], [random.uniform(-2, 2), 1], 10)
             if (ticks + 24) % 40 == 0:
                 addstuff("homingaccelcircle", BLUE, [x, 500], [10], [random.uniform(-2, 2), -1], 10)
-        elif ticks < 5240:
+        elif ticksm < 5240:
             if ticks%24 == 0:
                 randvar = random.randint(60, 100)
                 addspecialstuff("rect", [[BLUE, randvar], [RED, 100]], [0, random.randint(0, 410)], [20, 100], [[5, 0, randvar], [0, 0, 20], [-6, 0, 100]], 10)
             if ticks%32 == 0:
                 addstuff("rect", BLUE, [0, 0], [100, 20], [0, 5], 10)
                 addstuff("rect", BLUE, [500, 0], [100, 20], [0, 5], 10)
-        elif ticks < 5340:
+        elif ticksm < 5340:
             HP += 0.1
-        elif ticks < 5640:
+        elif ticksm < 5640:
             if ticks%40 == 0:
                 addstuff("homingcircle", BLUE, [random.choice([0, 600]), random.choice([0, 500])], [20], [0, 0])
-        elif ticks < 5940:
+        elif ticksm < 5940:
             if ticks%30 == 0:
                 addstuff("homingcircle", PURPLE, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5])
             if ticks%10 == 0:
                 addstuff("rect", BLUE, [0, 100], [20, 300], [8, 0])
                 addstuff("rect", BLUE, [150, 0], [300, 20], [0, 8])
-        elif ticks == 5941:
+        elif ticksm == 5941:
             #pygame.mixer.music.stop()
             #pygame.mixer.music.play(1, ticks / 60)
             Stuff = {}
@@ -448,14 +451,14 @@ while True:
                 movement[1] = -50
             if y < 300:
                 movement[1] = 50
-        elif ticks < 6240:
+        elif ticksm < 6240:
             if ticks%40 == 0:
                 addstuff("rect", BLUE, [0, 0], [310, 20], [0, 5])
                 addstuff("rect", BLUE, [290, 500], [310, 20], [0, -5])
-        elif ticks < 6480:
+        elif ticksm < 6480:
             if ticks%20 == 0:
                 addspecialstuff("rect", [[RED, 100]], [-600, random.randint(0,500)], [600, 50], [[1, 0, 50], [55, 0, 10], [0, 0, 15]], 10)
-        elif ticks < 7080:
+        elif ticksm < 7080:
             if ticks % 35 == 0:
                 addstuff("rect", BLUE, [0, 0], [10, 600], [5, 0])
             if ticks%5 == 0:
@@ -465,62 +468,62 @@ while True:
                 addstuff("accelcircle", BLUE, [x, 0], [10], [0, 8])
                 addstuff("homingaccelcircle", BLUE, [600, 200], [10],[-4, random.randint(-2, 2)])
                 addstuff("homingaccelcircle", BLUE, [000, 200], [10],[4, random.randint(-2, 2)])
-        elif ticks == 7081:
+        elif ticksm == 7081:
             HP += 10
             #pygame.mixer.music.stop()
             #pygame.mixer.music.play(1, ticks / 60)
-        elif ticks < 7100:
+        elif ticksm < 7100:
             HP += 0.1
-        elif ticks == 7101:
+        elif ticksm == 7101:
             #pygame.mixer.music.stop()
             #pygame.mixer.music.play(1, ticks / 60)
             Stuff = {}
             HP += 0.1
-        elif ticks < 7120:
+        elif ticksm < 7120:
             HP += 0.1
-        elif ticks < 7320:
+        elif ticksm < 7320:
             cords = [300-(math.cos(ticks/15))*349, 250-(math.sin(ticks/15))*299]
             addstuff("accelcircle", BLUE, cords, [10], [x*-7 for x in makeunitvector([cords[0]-x, cords[1]-y])], 10)
-        elif ticks < 7440:
+        elif ticksm < 7440:
             randvar = random.randint(0,100)
-            addspecialstuff("circle", [[BLUE, randvar], [RED, 100]], [300, 0], [8], [[0, 5, randvar], [random.randint(-5,5), 0, 100], [random.randint(-3, 3), random.randint(-1, 1), 50]], 5)
-        elif ticks < 7680:
+            addspecialstuff("circle", [[BLUE, randvar], [RED, 100]], [300, 0], [8], [[0, 5, randvar], [random.randint(-5,5), 0, 150]], 5)
+        elif ticksm < 7680:
             HP += 0.1
-        elif ticks < 7920:
+        elif ticksm < 7920:
             if ticks%5 == 0:
                 cords = [300-(math.cos(ticks/15))*349, 250-(math.sin(ticks/15))*299]
                 addstuff("homingcircle", PURPLE, cords, [10], [x*-7 for x in makeunitvector([cords[0]-x, cords[1]-y])], 10)
             if ticks%100 == 0:
                 addspecialstuff("rect", [[RED, 100]], [-600, random.randint(0,500)], [600, 50], [[1, 0, 50], [55, 0, 10], [0, 0, 15]], 10)
-        elif ticks < 8160:
+        elif ticksm < 8160:
             if ticks%35 == 0:
                 addspecialstuff("rect", [[RED, 100]], [-600, random.randint(0,500)], [600, 50], [[1, 0, 50], [55, 0, 10], [0, 0, 15]], 10)
-                addspecialstuff("rect", [[RED, 100]], [random.randint(0,500), -600], [50, 600], [[0, 1, 50], [0, 45, 10], [0, 0, 15]], 10)
-        elif ticks < 8700:
+                addspecialstuff("rect", [[RED, 100]], [random.randint(0,600), -600], [50, 600], [[0, 1, 50], [0, 45, 10], [0, 0, 15]], 10)
+        elif ticksm < 8700:
             if ticks%25 == 0:
                 cords1 = [random.randint(0, 600), random.choice([0, 500])]
                 unitvect = makeunitvector([cords1[0]-x, cords1[1]-y])
                 bruhwhyisthisactuallycomplicated = [x*-15 for x in makeunitvector([cords1[0]-x, cords1[1]-y])]
-                addspecialstuff("circle", [[BLUE, 100], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0], -unitvect[1], 100], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)
+                addspecialstuff("circle", [[BLUE, 30], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0] * 3, -unitvect[1] * 3, 30], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)
             if (ticks+12)%25 == 0:
                 cords1 = [random.choice([0, 600]), random.randint(0, 500)]
                 unitvect = makeunitvector([cords1[0]-x, cords1[1]-y])
                 bruhwhyisthisactuallycomplicated = [x*-15 for x in makeunitvector([cords1[0]-x, cords1[1]-y])]
-                addspecialstuff("circle", [[BLUE, 100], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0], -unitvect[1], 100], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
-        elif ticks < 8820:
+                addspecialstuff("circle", [[BLUE, 30], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0] * 3, -unitvect[1] * 3, 30], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
+        elif ticksm < 8820:
             pass
-        elif ticks < 9360:
+        elif ticksm < 9360:
             if ticks %5 == 0:
                 cords = [300-(math.cos(ticks/20))*349, 250-(math.sin(ticks/20))*299]
                 unitvect = makeunitvector([cords[0]-300, cords[1]-250])
                 bruhwhyisthisactuallycomplicated = [q*-15 for q in unitvect]
                 addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords[0], cords[1]], [15], [[-unitvect[0] * 5, -unitvect[1] * 5, 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)
-        elif ticks < 9960:
+        elif ticksm < 9960:
             if ticks%3 == 0:
                 addstuff("circle", RED, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5])
                 addstuff("circle", BLACK, [0, y], [10], [5, 0])
         
-        elif ticks < 10330:
+        elif ticksm < 10330:
             if ticks%50 == 0:
                 addstuff("rect", BLUE, [0, 0], [300, 20], [0, 7])
                 addstuff("rect", BLUE, [300, 500], [300, 20], [0, -7])
@@ -534,11 +537,11 @@ while True:
                 unitvect = makeunitvector([cords1[0]-x, cords1[1]-y])
                 bruhwhyisthisactuallycomplicated = [x*-15 for x in makeunitvector([cords1[0]-x, cords1[1]-y])]
                 addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0] * 5, -unitvect[1] * 5, 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
-        #elif ticks == 10440:
+        #elif ticksm == 10440:
         #    pygame.mixer.music.fadeout(3500)
-        elif ticks == 10450:
+        elif ticksm == 10450:
             #pygame.mixer.music.stop()
-            pygame.mixer.music.play(1, ticks / 60, fade_ms=500)
+            #pygame.mixer.music.play(1, ticks / 60, fade_ms=500)
             texttoprint = ["FOCUS", 100]
             addspecialstuff("rect", [[RED, 100], [RED, 650], [RED, 50]], [0,0], [40, 40],
                             [[11, 1, 50], [0, 0, 50], [0, 10, 10], [0, 0, 10], [0, 10, 10],
@@ -605,14 +608,14 @@ while True:
             addspecialstuff("rect", [[RED, 100]], [-1200, 120], [1200, 130], [[0.51, 0, 750], [-10, 0, 12], [0, 0, 50]], 75)
             addspecialstuff("rect", [[RED, 100]], [-1200, 250], [1200, 100], [[0.51, 0, 750], [50, 0, 12], [0, 0, 50]], 75)
             addspecialstuff("rect", [[RED, 100]], [-1200, 350], [1200, 150], [[0.51, 0, 750], [50, 0, 12], [0, 0, 50]], 75)
-        elif ticks < 10500:
+        elif ticksm < 10500:
             pass
-        elif ticks < 11000:
+        elif ticksm < 11000:
             if ticks%20 == 0:
                 addstuff("circle", BLUE, [x, 0], [10], [0, 5], 1)
-        elif ticks == 11380:
+        elif ticksm == 11380:
             texttoprint = ["You win", 200]
-        elif ticks == 11580:
+        elif ticksm == 11580:
             ground2 = False
             mainmenu = True
         
