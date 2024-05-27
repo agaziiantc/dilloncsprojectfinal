@@ -327,7 +327,7 @@ while True:
 
             if ticks % 20 == 0:
                 addstuff("circle", BLUE, [300, 0], [3],
-                         [random.uniform(-3, 3), 1]) 
+                         [random.uniform(-2, 2), 1]) 
             if (ticks + 37) % 225 == 0:
                 addstuff("rect", BLUE, [0, 0], [10, 600], [3, 0])
         elif ticks < 980:
@@ -521,19 +521,19 @@ while True:
                 addstuff("circle", BLACK, [0, y], [10], [5, 0])
         
         elif ticks < 10330:
-            if ticks%60 == 0:
-                addstuff("rect", BLUE, [0, 0], [300, 20], [0, 5])
-                addstuff("rect", BLUE, [300, 500], [300, 20], [0, -5])
-            if ticks%75 == 0:
+            if ticks%50 == 0:
+                addstuff("rect", BLUE, [0, 0], [300, 20], [0, 7])
+                addstuff("rect", BLUE, [300, 500], [300, 20], [0, -7])
+            if ticks%50 == 0:
                 cords1 = [random.randint(0, 600), random.choice([0, 500])]
                 unitvect = makeunitvector([cords1[0]-x, cords1[1]-y])
                 bruhwhyisthisactuallycomplicated = [x*-15 for x in makeunitvector([cords1[0]-x, cords1[1]-y])]
-                addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0], -unitvect[1], 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)
-            if (ticks+37)%75 == 0:
+                addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0] * 5, -unitvect[1] * 5, 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)
+            if (ticks+25)%50 == 0:
                 cords1 = [random.choice([0, 600]), random.randint(0, 500)]
                 unitvect = makeunitvector([cords1[0]-x, cords1[1]-y])
                 bruhwhyisthisactuallycomplicated = [x*-15 for x in makeunitvector([cords1[0]-x, cords1[1]-y])]
-                addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0], -unitvect[1], 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
+                addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0] * 5, -unitvect[1] * 5, 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
         #elif ticks == 10440:
         #    pygame.mixer.music.fadeout(3500)
         elif ticks == 10450:
