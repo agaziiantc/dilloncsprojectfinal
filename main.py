@@ -66,6 +66,10 @@ window = Window.from_display_module()
 windowpos = window.position
 clr = (0, 0, 0)
 safeguard = False
+gravity = 0
+ticksg = 0
+gravityh = 0
+ticksgh = 0
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
 def addstuff(obj, color, cords, size, vector, damage=5):
     global Stuff
@@ -80,7 +84,7 @@ def addstuff(obj, color, cords, size, vector, damage=5):
             "damage": damage
         }
     })
-def addspecialstuff(obj, color, cords, size, vector, damage):
+def addspecialstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [0, 0]]):
     global SpecialStuff
     global intv
     intv += 1
@@ -90,7 +94,8 @@ def addspecialstuff(obj, color, cords, size, vector, damage):
             "cords": cords,
             "size": size,
             "vector": vector,
-            "damage": damage
+            "damage": damage,
+            "gravity": gravity
         }
     })
 #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (WIDTH,HEIGHT)
@@ -106,14 +111,17 @@ rvar = 10
 mainmenu = True
 movementground = False
 ground2 = False
+hyperfancystuff = False
 while True:
     #Main menu
     while mainmenu:
         rvar = 10
         r2var = 10
+        r3var = 10
         screen.fill(BLACK)
         pygame.draw.circle(screen, RED, (WIDTH / 2, HEIGHT / 2), rvar)
         pygame.draw.circle(screen, ORANGE, (200, 250), r2var)
+        pygame.draw.circle(screen, GREEN, (400, 250), r3var)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -164,8 +172,310 @@ while True:
                                                     
                     pygame.mixer.music.play(1)
                     safeguard = False
+                if x1 > 400 - r and x1 < 400 + r and y1 < 250 + r and y1 > 250 - r:
+                    while r3var > 0:
+                        r3var -= 0.09
+                        screen.fill(BLACK)
+                        pygame.draw.circle(screen, GREEN, (400, 250), r3var)
+                        pygame.display.update()
+                    r = 10
+                    Stuff = {}
+                    SpecialStuff = {}
+                    ticks = 0
+                    HP = 100
+                    x, y = WIDTH / 2, HEIGHT / 2
+                    movementsbool = [False, False, False, False]
+                    movement = [0, 0]
+                    mainmenu = False
+                    movementground = False
+                    ground2 = False
+                    hyperfancystuff = True
+                    COLOR = GREEN
+                    texttoprint = ["", 0]
+                    pygame.mixer.music.load('funnylimbosong.wav')
+                    pygame.mixer.music.set_volume(0.3)
+                                                    
+                    pygame.mixer.music.play(1)
+                    safeguard = False
         screen.blit(text, (20, 20))
         pygame.display.update()
+        
+        
+        
+    #Green
+    while hyperfancystuff:
+        ticks += 1
+        timev = time.time()
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    movementsbool[2] = True
+                if event.key == pygame.K_DOWN:
+                    movementsbool[3] = True
+                if event.key == pygame.K_LEFT:
+                    movementsbool[0] = True
+                if event.key == pygame.K_RIGHT:
+                    movementsbool[1] = True
+                if event.key == pygame.K_LSHIFT:
+                    if CD < 0:
+                        movement[0] = movement[0] * 8
+                        movement[1] = movement[1] * 8
+                        #iframes += 20
+                        CD = 5
+                
+                if event.key == pygame.K_LCTRL:
+                    #addstuff("rect", BLUE, [0, 0], [10, 800], [5, 0])
+                    #addstuff("circle", BLUE, [300, 0], [10], [random.randint(-5, 5), 5])
+                    #addstuff("arc", COLOR, [x, y], [20, 20], [makeunitvector(movement)[0] + movement[0],makeunitvector(movement)[1] + movement[1]])
+                    #print(f"x : {x}, y : {y}")
+                    #print(f"x : {movement[0]}, y : {movement[1]}")
+                    #print(Stuff)
+                    #print(makeunitvector(movement))
+                    #addspecialstuff("rect", [[BLUE, 100]], [0,0], [10, 50], [[20, 0, 30], [0, 0, 100]], 10)
+                    #addstuff("homingcircle", PURPLE, [0, random.randint(0, 500)], [10], [1, 0])
+                    #print(SpecialStuff)
+                    #print(ticks)
+                    #print(SpecialStuff["rect1"])
+                    #print(SpecialStuff["rect1"]["vector"][0])
+                    #print(iframes)
+                    #if gravity == 0:
+                    #    gravity = 0.8
+                    #else:
+                    #    gravity = -0.8
+                    addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+                    
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP:
+                    movementsbool[2] = False
+                if event.key == pygame.K_DOWN:
+                    movementsbool[3] = False
+                if event.key == pygame.K_LEFT:
+                    movementsbool[0] = False
+                if event.key == pygame.K_RIGHT:
+                    movementsbool[1] = False
+            if event.type == MOUSEBUTTONDOWN:
+                x1, y1 = pygame.mouse.get_pos()
+                print(f"x: {x1} y: {y1}")
+        #Figure out what to move the character by:
+        if movementsbool[0]:
+            movement[0] += -1.1
+            ticksgh = 0
+        else:
+            ticksgh += 1
+            movement[0] += gravityh * math.log(ticksgh, 8)
+        if movementsbool[1]:
+            movement[0] += 1.1
+            ticksgh = 0
+        else:
+            ticksgh += 1
+            movement[0] += gravityh * math.log(ticksgh, 8)
+        if movementsbool[2]:
+            movement[1] += -1.1
+            ticksg = 0
+        else:
+            ticksg += 1
+            movement[1] += gravity * math.log(ticksg, 8)
+        if movementsbool[3]:
+            movement[1] += 1.1
+            ticksg = 0
+        else:
+            ticksg += 1
+            movement[1] += gravity * math.log(ticksg, 8)
+        
+        absmovement = [abs(x) for x in movement]
+        if absmovement[0] > 0:
+            movement[0] = movement[0] * 0.8
+        if absmovement[1] > 0:
+            movement[1] = movement[1] * 0.8
+        if absmovement[0] > 5.8 or absmovement[1] > 5.8:
+            if absmovement[0] > 15 or absmovement[1] > 15:
+                #print("Very fast!")
+                CD -= 0.05
+            #print(f"fast: {absmovement[0]} ; {absmovement[1]}")
+            if 4 < CD and 5 > CD: 
+                print("dashiframes")
+                iframes = 10
+        iframes -= 1
+
+        #Color shenanigans
+        if iframes > 0:
+            if COLOR[1] > 200:
+                COLOR = (0, COLOR[1] - 25, 0)
+            if COLOR[1] > 10:
+                COLOR = (0, COLOR[1] - 10, 0)
+        else:
+            if COLOR[1] < 255:
+                COLOR = (0, COLOR[1] + 25, 0)
+            if COLOR[1] > 255:
+                COLOR = (0, 255, 0)
+        #print(COLOR)
+        #Move the character:
+        x += movement[0] * speedx
+        y += movement[1] * speedy
+        #Fix character position:
+        if x > WIDTH:
+            x = WIDTH
+        if x < 0:
+            x = 0
+        if y > HEIGHT:
+            y = HEIGHT
+        if y < 0:
+            y = 0
+        
+        if texttoprint[1] < 0:
+            texttoprint[0] = ""
+        
+        gravity, gravityh = 0, 0
+        if ticks == 10:
+            #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+            #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+            #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+            addspecialstuff("circle", [[BLACK, 100]], [300, 350], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+            addspecialstuff("circle", [[BLACK, 100]], [300, 150], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+
+        
+        #elif ticks < 100:
+        #    pass
+        #if ticks < 1000:
+            
+        #    if y > 250:
+        #        gravity = -0.8
+        #    elif y < 250:
+        #        gravity = 0.8
+        #    if x > 300:
+        #        gravityh = -0.8
+        #    elif x < 300:
+        #        gravityh = 0.8
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        texttoprint[1] -= 1
+        screen.fill(WHITE)
+        screen.blit(font.render(texttoprint[0], True, GREEN), (WIDTH / 2 - len(texttoprint[0]) * 9, HEIGHT / 2 - 50))
+
+        #Projectiles moving & drawing:
+        stf = 0  #just a counter variable
+        for i in list(Stuff.keys()):
+            Stuff[i]["cords"] = [Stuff[i]["cords"][0] + Stuff[i]["vector"][0],Stuff[i]["cords"][1] + Stuff[i]["vector"][1]]
+            addstf = True
+            if Stuff[i]["cords"][0] > WIDTH + 100 or Stuff[i]["cords"][0] < -100 or Stuff[i]["cords"][1] > HEIGHT + 100 or Stuff[i]["cords"][1] < -100:
+                del Stuff[i]
+                continue
+
+            #draw the stuff + collisions (because of course circles are centered but rectangles aren't, which makes sense but still is annoying)
+            if "rect" in i:
+                pygame.draw.rect(screen, Stuff[i]["color"], (Stuff[i]["cords"][0], Stuff[i]["cords"][1], Stuff[i]["size"][0], Stuff[i]["size"][1]))
+                if Stuff[i]["cords"][0] <= x and (Stuff[i]["cords"][0] + Stuff[i]["size"][0]) >= x and Stuff[i]["cords"][1] <= y and (Stuff[i]["cords"][1] + Stuff[i]["size"][1]) >= y:
+                    #print("collision with rect obj")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= Stuff[i]["damage"]
+                        iframes = 10
+
+            if "circle" in i:
+                pygame.draw.circle( screen, Stuff[i]["color"], (Stuff[i]["cords"][0], Stuff[i]["cords"][1]), Stuff[i]["size"][0])
+                if (Stuff[i]["cords"][0] + Stuff[i]["size"][0] > x and Stuff[i]["cords"][0] - Stuff[i]["size"][0] < x) and (Stuff[i]["cords"][1] + Stuff[i]["size"][0] > y and Stuff[i]["cords"][1] - Stuff[i]["size"][0] < y):
+                    #print("collision with circle obj")
+                    #print("y collision")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= Stuff[i]["damage"]
+                        iframes = 10
+
+            #accelerate stuff with the "accel" tag
+            if "accel" in i:
+                Stuff[i]["vector"] = [Stuff[i]["vector"][0] * 1.05,Stuff[i]["vector"][1] * 1.05]
+            #home in the homing stuff
+            if "homing" in i:
+                unitvect = makeunitvector([x - Stuff[i]["cords"][0], y - Stuff[i]["cords"][1]])
+                Stuff[i]["vector"] = [Stuff[i]["vector"][0] + 0.1 * unitvect[0], Stuff[i]["vector"][1] + 0.1 * unitvect[1]]
+            stf += 1
+        spcstf = 0
+        for i in list(SpecialStuff.keys()):
+            crdvar = SpecialStuff[i]["cords"]
+            if len(SpecialStuff[i]["vector"]) > 0:
+                if SpecialStuff[i]["vector"][0][2] > 0:
+                    crdvar = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
+                    SpecialStuff[i]["vector"][0][2] = SpecialStuff[i]["vector"][0][2] - 1
+                if SpecialStuff[i]["vector"][0][2] <= 0:
+                    del SpecialStuff[i]["vector"][0]
+            else:
+                del SpecialStuff[i]
+                continue
+            if len(SpecialStuff[i]["color"]) > 1:
+                if SpecialStuff[i]["color"][0][1] > 0:
+                    SpecialStuff[i]["color"][0][1] = SpecialStuff[i]["color"][0][1] - 1
+                if SpecialStuff[i]["color"][0][1] <= 0:
+                    del SpecialStuff[i]["color"][0]
+            clr = SpecialStuff[i]["color"][0][0]
+            if "rect" in i:
+                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
+                if crdvar[0] <= x and (crdvar[0] + SpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + SpecialStuff[i]["size"][1]) >= y:
+                    #print("collision with rect obj")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= SpecialStuff[i]["damage"]
+                        iframes = 10
+            if "circle" in i:
+                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), SpecialStuff[i]["size"][0])
+                if (crdvar[0] + SpecialStuff[i]["size"][0] > x and crdvar[0] - SpecialStuff[i]["size"][0] < x) and (crdvar[1] + SpecialStuff[i]["size"][0] > y and crdvar[1] - SpecialStuff[i]["size"][0] < y):
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= SpecialStuff[i]["damage"]
+                        iframes = 10
+            if SpecialStuff[i]["gravity"][0]:
+                #print(SpecialStuff[i]["gravity"])
+                dist = math.sqrt(((crdvar[0] - x) ** 2) + ((crdvar[1] - y) ** 2))
+                if x > crdvar[0]:
+                    gravityh -= SpecialStuff[i]["gravity"][1] / ((dist * 0.1) + 1)
+                elif x < crdvar[0]:
+                    gravityh += SpecialStuff[i]["gravity"][1] / ((dist * 0.1) + 1)
+                if y > crdvar[1]:
+                    gravity -= SpecialStuff[i]["gravity"][2] / ((dist * 0.1) + 1)
+                elif y < crdvar[1]:
+                    gravity += SpecialStuff[i]["gravity"][2] / ((dist * 0.1) + 1)
+                
+        #Draw healthbar:
+        if HP > 0:
+            pygame.draw.rect(screen, COLOR, (0, 10, HP, 20))
+            pygame.draw.polygon(screen, COLOR, [(HP, 10), (HP + 2*math.log(HP,2), 10), (HP, 29)])
+        pygame.draw.circle(screen, COLOR, (x, y), r)
+        pygame.display.update()
+        CD -= 0.1
+        clock.tick(FPS)
+        timetaken = time.time() - timev
+        if timetaken > 0.1:
+            print(f"Long frame! {timetaken}")
+        if HP <= 0:
+            pygame.mixer.music.stop()
+            print("l")
+            movementground = False
+            mainmenu = True
+            ground2 = False
+            COLOR = (255, 0, 0)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     #orang
     while ground2:
         ticks += 1
@@ -292,7 +602,7 @@ while True:
                 CD -= 0.05
             #print(f"fast: {absmovement[0]} ; {absmovement[1]}")
             if 4 < CD and 5 > CD: 
-                print("dashiframes")
+                #print("dashiframes")
                 iframes = 10
         iframes -= 1
 
@@ -676,7 +986,7 @@ while True:
             
             if len(SpecialStuff[i]["vector"]) > 0:
                 if SpecialStuff[i]["vector"][0][2] > 0:
-                    SpecialStuff[i]["cords"] = [SpecialStuff[i]["cords"][0] + SpecialStuff[i]["vector"][0][0],SpecialStuff[i]["cords"][1] + SpecialStuff[i]["vector"][0][1]]
+                    crdvar = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
                     SpecialStuff[i]["vector"][0][2] = SpecialStuff[i]["vector"][0][2] - 1
                 if SpecialStuff[i]["vector"][0][2] <= 0:
                     del SpecialStuff[i]["vector"][0]
@@ -690,16 +1000,16 @@ while True:
                     del SpecialStuff[i]["color"][0]
             clr = SpecialStuff[i]["color"][0][0]
             if "rect" in i:
-                pygame.draw.rect(screen, clr, (SpecialStuff[i]["cords"][0], SpecialStuff[i]["cords"][1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
-                if SpecialStuff[i]["cords"][0] <= x and (SpecialStuff[i]["cords"][0] + SpecialStuff[i]["size"][0]) >= x and SpecialStuff[i]["cords"][1] <= y and (SpecialStuff[i]["cords"][1] + SpecialStuff[i]["size"][1]) >= y:
+                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
+                if crdvar[0] <= x and (crdvar[0] + SpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + SpecialStuff[i]["size"][1]) >= y:
                     #print("collision with rect obj")
                     if iframes <= 0:
                         print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
                         iframes = 10
             if "circle" in i:
-                pygame.draw.circle(screen, clr, (SpecialStuff[i]["cords"][0], SpecialStuff[i]["cords"][1]), SpecialStuff[i]["size"][0])
-                if (SpecialStuff[i]["cords"][0] + SpecialStuff[i]["size"][0] > x and SpecialStuff[i]["cords"][0] - SpecialStuff[i]["size"][0] < x) and (SpecialStuff[i]["cords"][1] + SpecialStuff[i]["size"][0] > y and SpecialStuff[i]["cords"][1] - SpecialStuff[i]["size"][0] < y):
+                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), SpecialStuff[i]["size"][0])
+                if (crdvar[0] + SpecialStuff[i]["size"][0] > x and crdvar[0] - SpecialStuff[i]["size"][0] < x) and (crdvar[1] + SpecialStuff[i]["size"][0] > y and crdvar[1] - SpecialStuff[i]["size"][0] < y):
                     if iframes <= 0:
                         print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
@@ -1234,6 +1544,7 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
 
 
 
