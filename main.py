@@ -65,6 +65,7 @@ intv = 0
 window = Window.from_display_module()
 windowpos = window.position
 clr = (0, 0, 0)
+safeguard = False
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
 def addstuff(obj, color, cords, size, vector, damage=5):
     global Stuff
@@ -162,7 +163,7 @@ while True:
                     pygame.mixer.music.set_volume(0.3)
                                                     
                     pygame.mixer.music.play(1)
-                    
+                    safeguard = False
         screen.blit(text, (20, 20))
         pygame.display.update()
     #orang
@@ -211,7 +212,11 @@ while True:
                 if event.key == pygame.K_x:
                     pygame.mixer.music.stop()
                     ticks = 9500
-                    pygame.mixer.music.play(1, ticks / 60)
+                    pygame.mixer.music.play(1, ticks/60)
+                    pygame.mixer.music.set_pos(ticks / 60)
+                    pos = pygame.mixer.music.get_pos()
+                    ticksm = int((60 / 1000) * ticks / 60)
+                    ticksm = 9500
                 if event.key == pygame.K_h:
                     HP += 50
                 if event.key == pygame.K_0:
@@ -466,8 +471,8 @@ while True:
             if ticks % 50 == 0:
                 addstuff("accelcircle", BLUE, [0, y], [10], [8, 0])
                 addstuff("accelcircle", BLUE, [x, 0], [10], [0, 8])
-                addstuff("homingaccelcircle", BLUE, [600, 200], [10],[-4, random.randint(-2, 2)])
-                addstuff("homingaccelcircle", BLUE, [000, 200], [10],[4, random.randint(-2, 2)])
+                #addstuff("homingaccelcircle", BLUE, [600, 200], [10],[-4, random.randint(-2, 2)])
+                #addstuff("homingaccelcircle", BLUE, [000, 200], [10],[4, random.randint(-2, 2)])
         elif ticksm == 7081:
             HP += 10
             #pygame.mixer.music.stop()
@@ -523,7 +528,7 @@ while True:
                 addstuff("circle", RED, [abs(math.sin(ticks/30)) * 600, 0], [10], [0, 5])
                 addstuff("circle", BLACK, [0, y], [10], [5, 0])
         
-        elif ticksm < 10330:
+        elif ticksm < 10390:
             if ticks%50 == 0:
                 addstuff("rect", BLUE, [0, 0], [300, 20], [0, 7])
                 addstuff("rect", BLUE, [300, 500], [300, 20], [0, -7])
@@ -539,7 +544,10 @@ while True:
                 addspecialstuff("circle", [[BLUE, 10], [RED, 100]], [cords1[0], cords1[1]], [15], [[-unitvect[0] * 5, -unitvect[1] * 5, 10], [0, 0, 20], [bruhwhyisthisactuallycomplicated[0], bruhwhyisthisactuallycomplicated[1], 100]], 10)    
         #elif ticksm == 10440:
         #    pygame.mixer.music.fadeout(3500)
-        elif ticksm == 10450:
+        elif ticksm < 10450:
+            pass
+        elif ticksm < 10500 and not safeguard:
+            safeguard = True
             #pygame.mixer.music.stop()
             #pygame.mixer.music.play(1, ticks / 60, fade_ms=500)
             texttoprint = ["FOCUS", 100]
