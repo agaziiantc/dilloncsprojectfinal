@@ -258,6 +258,7 @@ while True:
                     movementsbool[1] = False
             if event.type == MOUSEBUTTONDOWN:
                 x1, y1 = pygame.mouse.get_pos()
+                addspecialstuff("circle", [[BLACK, 100]], [x1, y1], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
                 print(f"x: {x1} y: {y1}")
         #Figure out what to move the character by:
         if movementsbool[0]:
@@ -329,12 +330,12 @@ while True:
             texttoprint[0] = ""
         
         gravity, gravityh = 0, 0
-        if ticks == 10:
+        #if ticks == 10:
             #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
             #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
             #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
-            addspecialstuff("circle", [[BLACK, 100]], [300, 350], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
-            addspecialstuff("circle", [[BLACK, 100]], [300, 150], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+            #addspecialstuff("circle", [[BLACK, 100]], [300, 350], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
+            #addspecialstuff("circle", [[BLACK, 100]], [300, 150], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
 
         
         #elif ticks < 100:
@@ -462,6 +463,7 @@ while True:
             print("l")
             movementground = False
             mainmenu = True
+            hyperfancystuff = False
             ground2 = False
             COLOR = (255, 0, 0)
         
@@ -983,10 +985,10 @@ while True:
             stf += 1
         spcstf = 0
         for i in list(SpecialStuff.keys()):
-            
+
             if len(SpecialStuff[i]["vector"]) > 0:
                 if SpecialStuff[i]["vector"][0][2] > 0:
-                    crdvar = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
+                    SpecialStuff[i]["cords"] = [SpecialStuff[i]["cords"][0] + SpecialStuff[i]["vector"][0][0],SpecialStuff[i]["cords"][1] + SpecialStuff[i]["vector"][0][1]]
                     SpecialStuff[i]["vector"][0][2] = SpecialStuff[i]["vector"][0][2] - 1
                 if SpecialStuff[i]["vector"][0][2] <= 0:
                     del SpecialStuff[i]["vector"][0]
@@ -1000,16 +1002,16 @@ while True:
                     del SpecialStuff[i]["color"][0]
             clr = SpecialStuff[i]["color"][0][0]
             if "rect" in i:
-                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
-                if crdvar[0] <= x and (crdvar[0] + SpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + SpecialStuff[i]["size"][1]) >= y:
+                pygame.draw.rect(screen, clr, (SpecialStuff[i]["cords"][0], SpecialStuff[i]["cords"][1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
+                if SpecialStuff[i]["cords"][0] <= x and (SpecialStuff[i]["cords"][0] + SpecialStuff[i]["size"][0]) >= x and SpecialStuff[i]["cords"][1] <= y and (SpecialStuff[i]["cords"][1] + SpecialStuff[i]["size"][1]) >= y:
                     #print("collision with rect obj")
                     if iframes <= 0:
                         print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
                         iframes = 10
             if "circle" in i:
-                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), SpecialStuff[i]["size"][0])
-                if (crdvar[0] + SpecialStuff[i]["size"][0] > x and crdvar[0] - SpecialStuff[i]["size"][0] < x) and (crdvar[1] + SpecialStuff[i]["size"][0] > y and crdvar[1] - SpecialStuff[i]["size"][0] < y):
+                pygame.draw.circle(screen, clr, (SpecialStuff[i]["cords"][0], SpecialStuff[i]["cords"][1]), SpecialStuff[i]["size"][0])
+                if (SpecialStuff[i]["cords"][0] + SpecialStuff[i]["size"][0] > x and SpecialStuff[i]["cords"][0] - SpecialStuff[i]["size"][0] < x) and (SpecialStuff[i]["cords"][1] + SpecialStuff[i]["size"][0] > y and SpecialStuff[i]["cords"][1] - SpecialStuff[i]["size"][0] < y):
                     if iframes <= 0:
                         print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
@@ -1541,10 +1543,7 @@ while True:
         if HP <= 0:
             print("l")
             movementground = False
+            
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
-
-
-
-
