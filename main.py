@@ -56,6 +56,7 @@ speedx = 1
 speedy = 1
 Stuff = {}
 SpecialStuff = {}
+PlatformStuff = {}
 #obj: object type + id
 #color: color (affects properties btw). Special stuff has a sequence at [color, t]. If t is < 0 and there is another color it will delete itself. 
 #cords: the place where the object is
@@ -98,6 +99,22 @@ def addspecialstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [
             "gravity": gravity
         }
     })
+def addplatformstuff(obj, color, cords, size, vector, passable, gravity = [False, [0, 0]]):
+    global PlatformStuff
+    global intv
+    intv += 1
+    PlatformStuff.update({
+        f"{obj}{intv}": {
+            "color": color,
+            "cords": cords,
+            "size": size,
+            "vector": vector,
+            "passable": passable,
+            "gravity": gravity
+            }
+        })
+
+                         
 #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (WIDTH,HEIGHT)
 
 
@@ -245,8 +262,17 @@ while True:
                     #    gravity = 0.8
                     #else:
                     #    gravity = -0.8
-                    addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
-                    
+                    #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[1, 1, 1000]], 10, [True, 1.8, 1.8])
+                    #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
+                    #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
+                    #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
+                    #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
+                    addplatformstuff("rect", [[BLACK, 100]], [-100, 400], [100, 10], [[1, -1, 700]], True)
+                    addplatformstuff("rect", [[BLACK, 100]], [0, 250], [10, 100], [[5, 0, 130]], False)
+                    print(gravity)
+                if event.key == pygame.K_x:
+                    addspecialstuff("circle", [[BLACK, 100]], [300, 500], [25], [[0, 0, 1000]], 10, [True, 0, 4])
+                    #addspecialstuff("circle", [[BLACK, 100]], [300, 0], [25], [[0, 0, 1000]], 10, [True, 0, -4])
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     movementsbool[2] = False
@@ -258,29 +284,28 @@ while True:
                     movementsbool[1] = False
             if event.type == MOUSEBUTTONDOWN:
                 x1, y1 = pygame.mouse.get_pos()
-                addspecialstuff("circle", [[BLACK, 100]], [x1, y1], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
                 print(f"x: {x1} y: {y1}")
         #Figure out what to move the character by:
         if movementsbool[0]:
-            movement[0] += -1.1
+            movement[0] += -1.1 + gravityh
             ticksgh = 0
         else:
             ticksgh += 1
             movement[0] += gravityh * math.log(ticksgh, 8)
         if movementsbool[1]:
-            movement[0] += 1.1
+            movement[0] += 1.1 + gravityh
             ticksgh = 0
         else:
             ticksgh += 1
             movement[0] += gravityh * math.log(ticksgh, 8)
         if movementsbool[2]:
-            movement[1] += -1.1
+            movement[1] += -1.1 + gravity
             ticksg = 0
         else:
             ticksg += 1
             movement[1] += gravity * math.log(ticksg, 8)
         if movementsbool[3]:
-            movement[1] += 1.1
+            movement[1] += 1.1 + gravity
             ticksg = 0
         else:
             ticksg += 1
@@ -313,30 +338,19 @@ while True:
             if COLOR[1] > 255:
                 COLOR = (0, 255, 0)
         #print(COLOR)
-        #Move the character:
-        x += movement[0] * speedx
-        y += movement[1] * speedy
-        #Fix character position:
-        if x > WIDTH:
-            x = WIDTH
-        if x < 0:
-            x = 0
-        if y > HEIGHT:
-            y = HEIGHT
-        if y < 0:
-            y = 0
+        
         
         if texttoprint[1] < 0:
             texttoprint[0] = ""
         
         gravity, gravityh = 0, 0
-        #if ticks == 10:
+        if ticks == 10:
             #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
             #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
             #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
             #addspecialstuff("circle", [[BLACK, 100]], [300, 350], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
             #addspecialstuff("circle", [[BLACK, 100]], [300, 150], [25], [[0, 0, 1000]], 10, [True, 0.8, 0.8])
-
+            pass
         
         #elif ticks < 100:
         #    pass
@@ -407,7 +421,7 @@ while True:
             crdvar = SpecialStuff[i]["cords"]
             if len(SpecialStuff[i]["vector"]) > 0:
                 if SpecialStuff[i]["vector"][0][2] > 0:
-                    crdvar = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
+                    SpecialStuff[i]["cords"] = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
                     SpecialStuff[i]["vector"][0][2] = SpecialStuff[i]["vector"][0][2] - 1
                 if SpecialStuff[i]["vector"][0][2] <= 0:
                     del SpecialStuff[i]["vector"][0]
@@ -425,28 +439,92 @@ while True:
                 if crdvar[0] <= x and (crdvar[0] + SpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + SpecialStuff[i]["size"][1]) >= y:
                     #print("collision with rect obj")
                     if iframes <= 0:
-                        print("insert damage here")
+                        #print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
                         iframes = 10
             if "circle" in i:
                 pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), SpecialStuff[i]["size"][0])
                 if (crdvar[0] + SpecialStuff[i]["size"][0] > x and crdvar[0] - SpecialStuff[i]["size"][0] < x) and (crdvar[1] + SpecialStuff[i]["size"][0] > y and crdvar[1] - SpecialStuff[i]["size"][0] < y):
                     if iframes <= 0:
-                        print("insert damage here")
+                        #print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
                         iframes = 10
             if SpecialStuff[i]["gravity"][0]:
                 #print(SpecialStuff[i]["gravity"])
                 dist = math.sqrt(((crdvar[0] - x) ** 2) + ((crdvar[1] - y) ** 2))
                 if x > crdvar[0]:
-                    gravityh -= SpecialStuff[i]["gravity"][1] / ((dist * 0.1) + 1)
+                    gravityh -= SpecialStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
                 elif x < crdvar[0]:
-                    gravityh += SpecialStuff[i]["gravity"][1] / ((dist * 0.1) + 1)
+                    gravityh += SpecialStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
                 if y > crdvar[1]:
-                    gravity -= SpecialStuff[i]["gravity"][2] / ((dist * 0.1) + 1)
+                    gravity -= SpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
                 elif y < crdvar[1]:
-                    gravity += SpecialStuff[i]["gravity"][2] / ((dist * 0.1) + 1)
-                
+                    gravity += SpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+        #platforms   
+        for i in list(PlatformStuff.keys()):
+            crdvar = PlatformStuff[i]["cords"]
+            if len(PlatformStuff[i]["vector"]) > 0:
+                if PlatformStuff[i]["vector"][0][2] > 0:
+                    PlatformStuff[i]["cords"] = [crdvar[0] + PlatformStuff[i]["vector"][0][0],crdvar[1] + PlatformStuff[i]["vector"][0][1]]
+                    PlatformStuff[i]["vector"][0][2] = PlatformStuff[i]["vector"][0][2] - 1
+                if PlatformStuff[i]["vector"][0][2] <= 0:
+                    del PlatformStuff[i]["vector"][0]
+            else:
+                del PlatformStuff[i]
+                continue
+            if len(PlatformStuff[i]["color"]) > 1:
+                if PlatformStuff[i]["color"][0][1] > 0:
+                    PlatformStuff[i]["color"][0][1] = PlatformStuff[i]["color"][0][1] - 1
+                if PlatformStuff[i]["color"][0][1] <= 0:
+                    del PlatformStuff[i]["color"][0]
+            clr = PlatformStuff[i]["color"][0][0]
+            if "rect" in i:
+                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], PlatformStuff[i]["size"][0], PlatformStuff[i]["size"][1]))
+                if PlatformStuff[i]["passable"]:
+                    if not movementsbool[3] and not movementsbool[2] and crdvar[0] <= x and (crdvar[0] + PlatformStuff[i]["size"][0]) >= x and crdvar[1] <= y+r and (crdvar[1] + PlatformStuff[i]["size"][1]) >= y+r:
+                        
+                        x += PlatformStuff[i]["vector"][0][0]
+                        y += PlatformStuff[i]["vector"][0][1]
+                else:
+                    if crdvar[0] <= x and (crdvar[0] + PlatformStuff[i]["size"][0]) >= x and crdvar[1] <= y+r and (crdvar[1] + PlatformStuff[i]["size"][1]) >= y+r:
+                        
+                        if abs(PlatformStuff[i]["vector"][0][0]) > 0:
+                            movement[0] = 0
+                        if abs(PlatformStuff[i]["vector"][0][1]) > 0:
+                            movement[1] = 0
+                        x += PlatformStuff[i]["vector"][0][0]
+                        y += PlatformStuff[i]["vector"][0][1]
+            if "circle" in i:
+                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), PlatformStuff[i]["size"][0])
+                if (crdvar[0] + PlatformStuff[i]["size"][0] > x and crdvar[0] - PlatformStuff[i]["size"][0] < x) and (crdvar[1] + PlatformStuff[i]["size"][0] > y and crdvar[1] - PlatformStuff[i]["size"][0] < y):
+                    if iframes <= 0:
+                        #print("insert damage here")
+                        y -= 1 + abs(gravity) * math.log(ticksg, 8) * 5
+            if PlatformStuff[i]["gravity"][0]:
+                #print(SpecialStuff[i]["gravity"])
+                dist = math.sqrt(((crdvar[0] - x) ** 2) + ((crdvar[1] - y) ** 2))
+                if x > crdvar[0]:
+                    gravityh -= PlatformStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                elif x < crdvar[0]:
+                    gravityh += PlatformStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                if y > crdvar[1]:
+                    gravity -= PlatformStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+                elif y < crdvar[1]:
+                    gravity += PlatformStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+                    
+                    
+        #Move the character:
+        x += movement[0] * speedx
+        y += movement[1] * speedy
+        #Fix character position:
+        if x > WIDTH:
+            x = WIDTH
+        if x < 0:
+            x = 0
+        if y > HEIGHT:
+            y = HEIGHT
+        if y < 0:
+            y = 0
         #Draw healthbar:
         if HP > 0:
             pygame.draw.rect(screen, COLOR, (0, 10, HP, 20))
@@ -456,6 +534,8 @@ while True:
         CD -= 0.1
         clock.tick(FPS)
         timetaken = time.time() - timev
+        
+        
         if timetaken > 0.1:
             print(f"Long frame! {timetaken}")
         if HP <= 0:
@@ -463,7 +543,6 @@ while True:
             print("l")
             movementground = False
             mainmenu = True
-            hyperfancystuff = False
             ground2 = False
             COLOR = (255, 0, 0)
         
@@ -985,10 +1064,10 @@ while True:
             stf += 1
         spcstf = 0
         for i in list(SpecialStuff.keys()):
-
+            
             if len(SpecialStuff[i]["vector"]) > 0:
                 if SpecialStuff[i]["vector"][0][2] > 0:
-                    SpecialStuff[i]["cords"] = [SpecialStuff[i]["cords"][0] + SpecialStuff[i]["vector"][0][0],SpecialStuff[i]["cords"][1] + SpecialStuff[i]["vector"][0][1]]
+                    crdvar = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
                     SpecialStuff[i]["vector"][0][2] = SpecialStuff[i]["vector"][0][2] - 1
                 if SpecialStuff[i]["vector"][0][2] <= 0:
                     del SpecialStuff[i]["vector"][0]
@@ -1002,16 +1081,16 @@ while True:
                     del SpecialStuff[i]["color"][0]
             clr = SpecialStuff[i]["color"][0][0]
             if "rect" in i:
-                pygame.draw.rect(screen, clr, (SpecialStuff[i]["cords"][0], SpecialStuff[i]["cords"][1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
-                if SpecialStuff[i]["cords"][0] <= x and (SpecialStuff[i]["cords"][0] + SpecialStuff[i]["size"][0]) >= x and SpecialStuff[i]["cords"][1] <= y and (SpecialStuff[i]["cords"][1] + SpecialStuff[i]["size"][1]) >= y:
+                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], SpecialStuff[i]["size"][0], SpecialStuff[i]["size"][1]))
+                if crdvar[0] <= x and (crdvar[0] + SpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + SpecialStuff[i]["size"][1]) >= y:
                     #print("collision with rect obj")
                     if iframes <= 0:
                         print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
                         iframes = 10
             if "circle" in i:
-                pygame.draw.circle(screen, clr, (SpecialStuff[i]["cords"][0], SpecialStuff[i]["cords"][1]), SpecialStuff[i]["size"][0])
-                if (SpecialStuff[i]["cords"][0] + SpecialStuff[i]["size"][0] > x and SpecialStuff[i]["cords"][0] - SpecialStuff[i]["size"][0] < x) and (SpecialStuff[i]["cords"][1] + SpecialStuff[i]["size"][0] > y and SpecialStuff[i]["cords"][1] - SpecialStuff[i]["size"][0] < y):
+                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), SpecialStuff[i]["size"][0])
+                if (crdvar[0] + SpecialStuff[i]["size"][0] > x and crdvar[0] - SpecialStuff[i]["size"][0] < x) and (crdvar[1] + SpecialStuff[i]["size"][0] > y and crdvar[1] - SpecialStuff[i]["size"][0] < y):
                     if iframes <= 0:
                         print("insert damage here")
                         HP -= SpecialStuff[i]["damage"]
@@ -1543,7 +1622,10 @@ while True:
         if HP <= 0:
             print("l")
             movementground = False
-            
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
+
+
+
