@@ -71,6 +71,9 @@ gravity = 0
 ticksg = 0
 gravityh = 0
 ticksgh = 0
+
+resetgravity = False
+resetgravityh = False
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
 def addstuff(obj, color, cords, size, vector, damage=5):
     global Stuff
@@ -99,7 +102,8 @@ def addspecialstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [
             "gravity": gravity
         }
     })
-def addplatformstuff(obj, color, cords, size, vector, passable, gravity = [False, [0, 0]]):
+#DO NOT USE PASSABLE=FALSE I GIVE UP ON MAKING IT WORK AAAAAAAAAAA
+def addplatformstuff(obj, color, cords, size, vector, passable=True, gravity = [False, [0, 0]]):
     global PlatformStuff
     global intv
     intv += 1
@@ -229,8 +233,10 @@ while True:
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
+                    resetgravity = True
                     movementsbool[2] = True
                 if event.key == pygame.K_DOWN:
+                    resetgravity = True
                     movementsbool[3] = True
                 if event.key == pygame.K_LEFT:
                     movementsbool[0] = True
@@ -267,12 +273,21 @@ while True:
                     #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
                     #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
                     #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
-                    addplatformstuff("rect", [[BLACK, 100]], [-100, 400], [100, 10], [[1, -1, 700]], True)
-                    addplatformstuff("rect", [[BLACK, 100]], [0, 250], [10, 100], [[5, 0, 130]], False)
+                    #addplatformstuff("rect", [[BLACK, 100]], [-100, 400], [100, 10], [[1, -1, 70]], True)
+                    #addplatformstuff("rect", [[BLACK, 100]], [0, 250], [40, 100], [[5, 0, 50], [0, -5, 50]], False)
                     print(gravity)
+                    print(movement)
+                    
                 if event.key == pygame.K_x:
-                    addspecialstuff("circle", [[BLACK, 100]], [300, 500], [25], [[0, 0, 1000]], 10, [True, 0, 4])
-                    #addspecialstuff("circle", [[BLACK, 100]], [300, 0], [25], [[0, 0, 1000]], 10, [True, 0, -4])
+                    
+                    addspecialstuff("circle", [[BLACK, 100]], [300, 500], [25], [[0, 0, 1000]], 10, [True, 0, 2])
+                if event.key == pygame.K_a:
+                    addplatformstuff("rect", [[BLACK, 100]], [0, 400], [600, 10], [[0, 0, 1000]])
+                    addplatformstuff("rect", [[BLACK, 100]], [0, 200], [600, 10], [[0, 0, 1000]])
+                    #addspecialstuff("rect", [[BLACK, 100]], [0, 000], [600, 20], [[0, 0, 1000]])
+                    #addspecialstuff("rect", [[BLACK, 100]], [0, 400], [600, 20], [[0, 0, 1000]])
+                if event.key == pygame.K_d:
+                    addspecialstuff("circle", [[BLACK, 100]], [600, 250], [25], [[-3, 0, 10]], 10, [True, -25, -25])
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     movementsbool[2] = False
@@ -285,46 +300,7 @@ while True:
             if event.type == MOUSEBUTTONDOWN:
                 x1, y1 = pygame.mouse.get_pos()
                 print(f"x: {x1} y: {y1}")
-        #Figure out what to move the character by:
-        if movementsbool[0]:
-            movement[0] += -1.1 + gravityh
-            ticksgh = 0
-        else:
-            ticksgh += 1
-            movement[0] += gravityh * math.log(ticksgh, 8)
-        if movementsbool[1]:
-            movement[0] += 1.1 + gravityh
-            ticksgh = 0
-        else:
-            ticksgh += 1
-            movement[0] += gravityh * math.log(ticksgh, 8)
-        if movementsbool[2]:
-            movement[1] += -1.1 + gravity
-            ticksg = 0
-        else:
-            ticksg += 1
-            movement[1] += gravity * math.log(ticksg, 8)
-        if movementsbool[3]:
-            movement[1] += 1.1 + gravity
-            ticksg = 0
-        else:
-            ticksg += 1
-            movement[1] += gravity * math.log(ticksg, 8)
         
-        absmovement = [abs(x) for x in movement]
-        if absmovement[0] > 0:
-            movement[0] = movement[0] * 0.8
-        if absmovement[1] > 0:
-            movement[1] = movement[1] * 0.8
-        if absmovement[0] > 5.8 or absmovement[1] > 5.8:
-            if absmovement[0] > 15 or absmovement[1] > 15:
-                #print("Very fast!")
-                CD -= 0.05
-            #print(f"fast: {absmovement[0]} ; {absmovement[1]}")
-            if 4 < CD and 5 > CD: 
-                print("dashiframes")
-                iframes = 10
-        iframes -= 1
 
         #Color shenanigans
         if iframes > 0:
@@ -460,6 +436,53 @@ while True:
                     gravity -= SpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
                 elif y < crdvar[1]:
                     gravity += SpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+        
+        
+        if resetgravity:
+            resetgravity = False
+            movement[1] = 0
+            gravity = 0
+        #Figure out what to move the character by:
+        if movementsbool[0]:
+            movement[0] += -1.1 + gravityh
+            ticksgh = 0
+        else:
+            ticksgh += 1
+            movement[0] += gravityh * math.log(ticksgh, 8)
+        if movementsbool[1]:
+            movement[0] += 1.1 + gravityh
+            ticksgh = 0
+        else:
+            ticksgh += 1
+            movement[0] += gravityh * math.log(ticksgh, 8)
+        if movementsbool[2]:
+            movement[1] += -1.1 + gravity
+            ticksg = 0
+        else:
+            ticksg += 1
+            movement[1] += gravity * math.log(ticksg, 8)
+        if movementsbool[3]:
+            movement[1] += 1.1 + gravity
+            ticksg = 0
+        else:
+            ticksg += 1
+            movement[1] += gravity * math.log(ticksg, 8)
+        
+        absmovement = [abs(x) for x in movement]
+        if absmovement[0] > 0:
+            movement[0] = movement[0] * 0.8
+        if absmovement[1] > 0:
+            movement[1] = movement[1] * 0.8
+        if absmovement[0] > 5.8 or absmovement[1] > 5.8:
+            if absmovement[0] > 15 or absmovement[1] > 15:
+                #print("Very fast!")
+                CD -= 0.05
+            #print(f"fast: {absmovement[0]} ; {absmovement[1]}")
+            if 4 < CD and 5 > CD: 
+                print("dashiframes")
+                iframes = 10
+        iframes -= 1
+        
         #platforms   
         for i in list(PlatformStuff.keys()):
             crdvar = PlatformStuff[i]["cords"]
@@ -469,7 +492,7 @@ while True:
                     PlatformStuff[i]["vector"][0][2] = PlatformStuff[i]["vector"][0][2] - 1
                 if PlatformStuff[i]["vector"][0][2] <= 0:
                     del PlatformStuff[i]["vector"][0]
-            else:
+            if len(PlatformStuff[i]["vector"]) <= 0:
                 del PlatformStuff[i]
                 continue
             if len(PlatformStuff[i]["color"]) > 1:
@@ -480,20 +503,13 @@ while True:
             clr = PlatformStuff[i]["color"][0][0]
             if "rect" in i:
                 pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], PlatformStuff[i]["size"][0], PlatformStuff[i]["size"][1]))
-                if PlatformStuff[i]["passable"]:
-                    if not movementsbool[3] and not movementsbool[2] and crdvar[0] <= x and (crdvar[0] + PlatformStuff[i]["size"][0]) >= x and crdvar[1] <= y+r and (crdvar[1] + PlatformStuff[i]["size"][1]) >= y+r:
-                        
-                        x += PlatformStuff[i]["vector"][0][0]
-                        y += PlatformStuff[i]["vector"][0][1]
-                else:
-                    if crdvar[0] <= x and (crdvar[0] + PlatformStuff[i]["size"][0]) >= x and crdvar[1] <= y+r and (crdvar[1] + PlatformStuff[i]["size"][1]) >= y+r:
-                        
-                        if abs(PlatformStuff[i]["vector"][0][0]) > 0:
-                            movement[0] = 0
-                        if abs(PlatformStuff[i]["vector"][0][1]) > 0:
-                            movement[1] = 0
-                        x += PlatformStuff[i]["vector"][0][0]
-                        y += PlatformStuff[i]["vector"][0][1]
+                if crdvar[0] <= x and (crdvar[0] + PlatformStuff[i]["size"][0]) >= x and crdvar[1] <= y+r and (crdvar[1] + PlatformStuff[i]["size"][1]) >= y+r:
+                    if not movementsbool[3] and not movementsbool[2]:
+                        movement[1] = 0
+                    if not movementsbool[1] and not movementsbool[0]:
+                        movement[0] = 0
+                    x += PlatformStuff[i]["vector"][0][0]
+                    y += PlatformStuff[i]["vector"][0][1] 
             if "circle" in i:
                 pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), PlatformStuff[i]["size"][0])
                 if (crdvar[0] + PlatformStuff[i]["size"][0] > x and crdvar[0] - PlatformStuff[i]["size"][0] < x) and (crdvar[1] + PlatformStuff[i]["size"][0] > y and crdvar[1] - PlatformStuff[i]["size"][0] < y):
@@ -511,8 +527,6 @@ while True:
                     gravity -= PlatformStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
                 elif y < crdvar[1]:
                     gravity += PlatformStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
-                    
-                    
         #Move the character:
         x += movement[0] * speedx
         y += movement[1] * speedy
@@ -553,7 +567,20 @@ while True:
         
         
         
-        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
         
         
         
