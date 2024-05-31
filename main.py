@@ -209,7 +209,7 @@ while True:
                     safeguard = False
                 if x1 > 400 - r and x1 < 400 + r and y1 < 250 + r and y1 > 250 - r:
                     while r3var > 0:
-                        r3var -= 0.09
+                        r3var -= 0.2
                         screen.fill(BLACK)
                         pygame.draw.circle(screen, GREEN, (400, 250), r3var)
                         pygame.display.update()
@@ -289,9 +289,9 @@ while True:
                     #addspecialstuff("circle", [[BLACK, 100]], [random.randint(0, 600), random.randint(0, 500)], [25], [[0, 0, 10000]], 10, [True, 1.8, 1.8])
                     #addplatformstuff("rect", [[BLACK, 100]], [-100, 400], [100, 10], [[1, -1, 70]], True)
                     #addplatformstuff("rect", [[BLACK, 100]], [0, 250], [40, 100], [[5, 0, 50], [0, -5, 50]], False)
-                    print(gravity)
-                    print(movement)
-                    
+                    #print(gravity)
+                    #print(movement)
+                    print(VerySpecialStuff)
                 if event.key == pygame.K_x:
                     
                     addspecialstuff("circle", [[BLACK, 100]], [300, 500], [25], [[0, 0, 1000]], 10, [True, 0, 2])
@@ -301,10 +301,10 @@ while True:
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 000], [600, 20], [[0, 0, 1000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 400], [600, 20], [[0, 0, 1000]])
                 if event.key == pygame.K_d:
-                    addspecialstuff("circle", [[BLACK, 100]], [300, 250], [25], [[-3, 0, 10]], 10, [True, -25, -25])
-                    addveryspecialstuff("circle", [[BLUE, 100]], [300, 250], [25], "rosecurve", damage=35, timecounter=50)
+                    addspecialstuff("circle", [[BLACK, 100]], [-50, 250], [25], [[15, 0, 50]], 10, [True, -1, -1])
+                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=150)
                     for i in range(49):
-                        addveryspecialstuff("circle", [[BLUE, 100]], [300, 250], [25], "rosecurve", damage=5, timecounter=49-i)
+                        addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=5, timecounter=149-i)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     movementsbool[2] = False
@@ -460,16 +460,22 @@ while True:
             crdvar = VerySpecialStuff[i]["cords"]
             VerySpecialStuff[i]["time"] += 1
             timetemp = VerySpecialStuff[i]["time"] / 100
+
+
+            #movetocenter
+            if "movetocenterfromleft" in VerySpecialStuff[i]["pathing"]:
+                vctr = [3000, 0]
+                goto = [-1800 + (300 * timetemp * 4), 250]
+                VerySpecialStuff[i]["cords"] = goto
+                if int(VerySpecialStuff[i]["cords"][0]) == 300:
+                    VerySpecialStuff[i]["pathing"] = VerySpecialStuff[i]["pathing"][20:]
+                    VerySpecialStuff[i]["time"] = 0
             #sine rose curve pathing
-            if "rosecurve" in VerySpecialStuff[i]["pathing"]:
+            elif "rosecurve" in VerySpecialStuff[i]["pathing"]:
                 goto = [x * 350 * math.sin(4*timetemp) for x in makeunitvector([(math.cos(timetemp)), (math.sin(timetemp))])]
-                
-                
                 VerySpecialStuff[i]["cords"] = [300 + goto[0], 250 + goto[1]]
                 
-            
-            
-            
+
             if len(VerySpecialStuff[i]["color"]) > 1:
                 if VerySpecialStuff[i]["color"][0][1] > 0:
                     VerySpecialStuff[i]["color"][0][1] = VerySpecialStuff[i]["color"][0][1] - 1
@@ -1718,7 +1724,6 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
-
 
 
 
