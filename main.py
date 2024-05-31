@@ -101,8 +101,7 @@ def addspecialstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [
             "gravity": gravity
         }
     })
-#DO NOT USE PASSABLE=FALSE I GIVE UP ON MAKING IT WORK AAAAAAAAAAA
-def addplatformstuff(obj, color, cords, size, vector, passable=True, gravity = [False, [0, 0]]):
+def addplatformstuff(obj, color, cords, size, vector, gravity = [False, [0, 0]]):
     global PlatformStuff
     global intv
     intv += 1
@@ -112,7 +111,6 @@ def addplatformstuff(obj, color, cords, size, vector, passable=True, gravity = [
             "cords": cords,
             "size": size,
             "vector": vector,
-            "passable": passable,
             "gravity": gravity
             }
         })
@@ -1651,6 +1649,7 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
 
 
 
