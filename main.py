@@ -7,7 +7,6 @@ import math
 import numpy as np
 import os
 from pygame._sdl2 import Window
-import tkinter as tk
 
 FPS = 60
 COLOR = (255, 0, 0)
