@@ -56,6 +56,7 @@ speedy = 1
 Stuff = {}
 SpecialStuff = {}
 PlatformStuff = {}
+VerySpecialStuff = {}
 #obj: object type + id
 #color: color (affects properties btw). Special stuff has a sequence at [color, t]. If t is < 0 and there is another color it will delete itself. 
 #cords: the place where the object is
@@ -114,7 +115,23 @@ def addplatformstuff(obj, color, cords, size, vector, gravity = [False, [0, 0]])
             "gravity": gravity
             }
         })
-
+#This is reserved for only the pathings that cant be done with vectors, will probably be laggy
+    #pathing is a string
+def addveryspecialstuff(obj, color, cords, size, pathing, damage=5, sprited = [False, None], gravity = [False, [0, 0]], timecounter=0):
+    global VerySpecialStuff
+    global intv
+    intv += 1
+    VerySpecialStuff.update({
+        f"{obj}{intv}_special": {
+            "color": color,
+            "cords": cords,
+            "size": size,
+            "pathing": pathing,
+            "damage": damage,
+            "sprited": sprited,
+            "gravity": gravity,
+            "time": timecounter
+            }})
                          
 #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (WIDTH,HEIGHT)
 
@@ -284,7 +301,10 @@ while True:
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 000], [600, 20], [[0, 0, 1000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 400], [600, 20], [[0, 0, 1000]])
                 if event.key == pygame.K_d:
-                    addspecialstuff("circle", [[BLACK, 100]], [600, 250], [25], [[-3, 0, 10]], 10, [True, -25, -25])
+                    addspecialstuff("circle", [[BLACK, 100]], [300, 250], [25], [[-3, 0, 10]], 10, [True, -25, -25])
+                    addveryspecialstuff("circle", [[BLUE, 100]], [300, 250], [25], "rosecurve", damage=35, timecounter=50)
+                    for i in range(49):
+                        addveryspecialstuff("circle", [[BLUE, 100]], [300, 250], [25], "rosecurve", damage=5, timecounter=49-i)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     movementsbool[2] = False
@@ -435,6 +455,54 @@ while True:
                     gravity += SpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
         
         
+        
+        for i in list(VerySpecialStuff.keys()):
+            crdvar = VerySpecialStuff[i]["cords"]
+            VerySpecialStuff[i]["time"] += 1
+            timetemp = VerySpecialStuff[i]["time"] / 100
+            #sine rose curve pathing
+            if "rosecurve" in VerySpecialStuff[i]["pathing"]:
+                goto = [x * 350 * math.sin(4*timetemp) for x in makeunitvector([(math.cos(timetemp)), (math.sin(timetemp))])]
+                
+                
+                VerySpecialStuff[i]["cords"] = [300 + goto[0], 250 + goto[1]]
+                
+            
+            
+            
+            if len(VerySpecialStuff[i]["color"]) > 1:
+                if VerySpecialStuff[i]["color"][0][1] > 0:
+                    VerySpecialStuff[i]["color"][0][1] = VerySpecialStuff[i]["color"][0][1] - 1
+                if VerySpecialStuff[i]["color"][0][1] <= 0:
+                    del VerySpecialStuff[i]["color"][0]
+            clr = VerySpecialStuff[i]["color"][0][0]
+            if "rect" in i:
+                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], VerySpecialStuff[i]["size"][0], VerySpecialStuff[i]["size"][1]))
+                if crdvar[0] <= x and (crdvar[0] + VerySpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + VerySpecialStuff[i]["size"][1]) >= y:
+                    #print("collision with rect obj")
+                    if iframes <= 0:
+                        #print("insert damage here")
+                        HP -= VerySpecialStuff[i]["damage"]
+                        iframes = 10
+            if "circle" in i:
+                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), VerySpecialStuff[i]["size"][0])
+                if (crdvar[0] + VerySpecialStuff[i]["size"][0] > x and crdvar[0] - VerySpecialStuff[i]["size"][0] < x) and (crdvar[1] + VerySpecialStuff[i]["size"][0] > y and crdvar[1] - VerySpecialStuff[i]["size"][0] < y):
+                    if iframes <= 0:
+                        #print("insert damage here")
+                        HP -= VerySpecialStuff[i]["damage"]
+                        iframes = 10
+            if VerySpecialStuff[i]["gravity"][0]:
+                #print(SpecialStuff[i]["gravity"])
+                dist = math.sqrt(((crdvar[0] - x) ** 2) + ((crdvar[1] - y) ** 2))
+                if x > crdvar[0]:
+                    gravityh -= VerySpecialStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                elif x < crdvar[0]:
+                    gravityh += VerySpecialStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                if y > crdvar[1]:
+                    gravity -= VerySpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+                elif y < crdvar[1]:
+                    gravity += VerySpecialStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+        
         if resetgravity:
             resetgravity = False
             movement[1] = 0
@@ -541,6 +609,7 @@ while True:
             pygame.draw.rect(screen, COLOR, (0, 10, HP, 20))
             pygame.draw.polygon(screen, COLOR, [(HP, 10), (HP + 2*math.log(HP,2), 10), (HP, 29)])
         pygame.draw.circle(screen, COLOR, (x, y), r)
+        
         pygame.display.update()
         CD -= 0.1
         clock.tick(FPS)
