@@ -240,6 +240,7 @@ while True:
                     ground2 = False
                     hyperfancystuff = True
                     phase1 = True
+                    phase2 = False
                     COLOR = GREEN
                     texttoprint = ["", 0]
                     #pygame.mixer.music.load('funnylimbosong.wav')
@@ -310,12 +311,12 @@ while True:
                     #print(VerySpecialStuff)
                 if event.key == pygame.K_x:
                     
-                    addspecialstuff("circle", [[WHITE, 100]], [300, 500], [25], [[0, 0, 10000]], 10, [True, 0, 4])
+                    addspecialstuff("circle", [[WHITE, 100]], [300, 500], [25], [[0, 0, 15000]], 10, [True, 0, 4])
                 if event.key == pygame.K_h:
                     HP += 100
                 if event.key == pygame.K_a:
-                    addplatformstuff("rect", [[WHITE, 100]], [0, 400], [600, 10], [[0, 0, 10000]])
-                    addplatformstuff("rect", [[WHITE, 100]], [0, 200], [600, 10], [[0, 0, 10000]])
+                    addplatformstuff("rect", [[WHITE, 100]], [0, 400], [600, 10], [[0, 0, 15000]])
+                    addplatformstuff("rect", [[WHITE, 100]], [0, 200], [600, 10], [[0, 0, 15000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 000], [600, 20], [[0, 0, 1000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 400], [600, 20], [[0, 0, 1000]])
                 if event.key == pygame.K_d:
@@ -387,7 +388,7 @@ while True:
         pos = pygame.mixer.music.get_pos()
         ticksm = int((60 / 1000) * pos) #ticksm = music based ticks
         if phase1:
-            if ticksm < 13740:
+            if ticksm + 13440 < 13740:
                 
                 if ticks == 100:
                     pygame.mixer.Sound.play(spawn_sound)
@@ -410,9 +411,9 @@ while True:
                         addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
                         addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
                         addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
-                    if (ticks)%500 == 0:
+                    if (ticks+150)%1500 == 0:
                         wormspeed = 2
-                    if (ticks+150)%500 == 0:
+                    if (ticks)%1500 == 0:
                         wormspeed = 1
                     #need to add in more attacks and stuff here    
                         
@@ -421,6 +422,7 @@ while True:
                 for i in list(VerySpecialStuff.keys()):
                     #print(f" {VerySpecialStuff[i]['time']} : {ticks}")
                     if VerySpecialStuff[i]["time"] > ticksfadeout:
+                        addspecialstuff("circle", [[LIGHTPURPLE, 100]], [VerySpecialStuff[i]["cords"][0] + random.randint(-10, 10), VerySpecialStuff[i]["cords"][1] + random.randint(-10, 10)], [50], [[0, 0, 10]], 10, gravity=[True, -0.1, -0.1])
                         #print("deleting")
                         del VerySpecialStuff[i]
                     continue
@@ -428,8 +430,26 @@ while True:
                 if len(VerySpecialStuff) == 0:
                     phase1 = False
                     phase2 = True
-        
-        
+                    #pygame.mixer.music.load('DoGMusic2.mp3')
+                    #pygame.mixer.music.set_volume(0.3)                                     
+                    #pygame.mixer.music.play(1)
+        elif phase2:
+            if ticksm == 0:
+                pygame.mixer.music.load('DoGMusic2.mp3')
+                pygame.mixer.music.set_volume(0.3)                                     
+                pygame.mixer.music.play(1)
+            elif ticksm < 540:
+                if ticks%5 == 0:
+                    addspecialstuff("circle", [[LIGHTPURPLE, 100]], [0 + random.randint(0, 25), 250 + random.randint(-25, 25)], [50], [[0, 0, 40]], 10, gravity=[True, -0.05, -0.05])
+            if ticksm > 540 and not safeguard:
+                safeguard = True
+                wormlength = 72
+                wormspeed = 2
+                addspecialstuff("circle", [[WHITE, 100]], [-50, 250], [25], [[0, 0, 30]], 10, [True, -10, -10])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=98*wormspeed, sprited=[True, tail1])
+                for i in range(wormlength):
+                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=5, timecounter=(99+ 2 * i)*wormspeed, sprited=[True, body1])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=(99 + wormlength * 2)*wormspeed, sprited=[True, head1])
         
         
         
@@ -537,7 +557,7 @@ while True:
             #movetocenter
             if "movetocenterfromleft" in VerySpecialStuff[i]["pathing"]:
                 vctr = [3000, 0]
-                goto = [(-2800 * int(wormlength / 51) * wormspeed) + (300 * timetemp * 4), 250]
+                goto = [(-3200 * int(wormlength / 51) * wormspeed) + (300 * timetemp * 4), 250]
                 VerySpecialStuff[i]["cords"] = goto
                 if VerySpecialStuff[i]["sprited"][0] == True:
                     offsetx, offsety = VerySpecialStuff[i]["sprited"][1].get_size() 
@@ -1813,3 +1833,4 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
