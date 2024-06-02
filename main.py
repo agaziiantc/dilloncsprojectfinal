@@ -78,7 +78,6 @@ gravity = 0
 ticksg = 0
 gravityh = 0
 ticksgh = 0
-bg = pygame.image.load("DoG.png")
 offset = 0
 resetgravity = False
 resetgravityh = False
