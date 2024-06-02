@@ -11,6 +11,7 @@ from pygame._sdl2 import Window
 FPS = 60
 COLOR = (255, 0, 0)
 PURPLE = (128, 0, 128)
+LIGHTPURPLE = (153,84,176)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
@@ -57,6 +58,12 @@ Stuff = {}
 SpecialStuff = {}
 PlatformStuff = {}
 VerySpecialStuff = {}
+laser_sound = pygame.mixer.Sound("laser.wav")
+spawn_sound = pygame.mixer.Sound("Spawn.wav")
+head1 = pygame.image.load("head1.png")
+body1 = pygame.image.load("body1.png")
+tail1 = pygame.image.load("tail1.png")
+
 #obj: object type + id
 #color: color (affects properties btw). Special stuff has a sequence at [color, t]. If t is < 0 and there is another color it will delete itself. 
 #cords: the place where the object is
@@ -71,7 +78,8 @@ gravity = 0
 ticksg = 0
 gravityh = 0
 ticksgh = 0
-
+bg = pygame.image.load("DoG.png")
+offset = 0
 resetgravity = False
 resetgravityh = False
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
@@ -143,10 +151,14 @@ def makeunitvector(vector):
     else:
         return [1, 1]
 rvar = 10
+wormlength = 51
+wormspeed = 1
 mainmenu = True
 movementground = False
 ground2 = False
 hyperfancystuff = False
+background = False
+debug = False
 while True:
     #Main menu
     while mainmenu:
@@ -227,11 +239,12 @@ while True:
                     hyperfancystuff = True
                     COLOR = GREEN
                     texttoprint = ["", 0]
-                    pygame.mixer.music.load('funnylimbosong.wav')
-                    pygame.mixer.music.set_volume(0.3)
+                    #pygame.mixer.music.load('funnylimbosong.wav')
+                    #pygame.mixer.music.set_volume(0.3)
                                                     
-                    pygame.mixer.music.play(1)
+                    #pygame.mixer.music.play(1)
                     safeguard = False
+                    background = False
         screen.blit(text, (20, 20))
         pygame.display.update()
         
@@ -294,17 +307,25 @@ while True:
                     print(VerySpecialStuff)
                 if event.key == pygame.K_x:
                     
-                    addspecialstuff("circle", [[BLACK, 100]], [300, 500], [25], [[0, 0, 1000]], 10, [True, 0, 2])
+                    addspecialstuff("circle", [[WHITE, 100]], [300, 500], [25], [[0, 0, 1000]], 10, [True, 0, 2])
+                if event.key == pygame.K_h:
+                    HP += 100
                 if event.key == pygame.K_a:
-                    addplatformstuff("rect", [[BLACK, 100]], [0, 400], [600, 10], [[0, 0, 1000]])
-                    addplatformstuff("rect", [[BLACK, 100]], [0, 200], [600, 10], [[0, 0, 1000]])
+                    addplatformstuff("rect", [[WHITE, 100]], [0, 400], [600, 10], [[0, 0, 1000]])
+                    addplatformstuff("rect", [[WHITE, 100]], [0, 200], [600, 10], [[0, 0, 1000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 000], [600, 20], [[0, 0, 1000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 400], [600, 20], [[0, 0, 1000]])
                 if event.key == pygame.K_d:
-                    addspecialstuff("circle", [[BLACK, 100]], [-50, 250], [25], [[15, 0, 50]], 10, [True, -1, -1])
-                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=150)
-                    for i in range(49):
-                        addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=5, timecounter=149-i)
+                #    addspecialstuff("circle", [[WHITE, 100]], [-50, 250], [25], [[7.5, 0, 30], [1.25, 0, 60], [-15, 0, 20]], 10, [True, -1, -1])
+                #    addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=150)
+                #    for i in range(49):
+                #        addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=5, timecounter=149-i)
+                #    addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=99)
+                #    background = True
+                    if debug:
+                        debug = False
+                    else:
+                        debug = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     movementsbool[2] = False
@@ -360,6 +381,34 @@ while True:
         
         
         
+        pos = pygame.mixer.music.get_pos()
+        ticksm = int((60 / 1000) * pos) #ticksm = music based ticks
+        if ticksm < 27480:
+            if ticks == 100:
+                pygame.mixer.Sound.play(spawn_sound)
+                background = True
+                pygame.mixer.music.load('DoGMusic1.mp3')
+                pygame.mixer.music.set_volume(0.3)                                     
+                pygame.mixer.music.play(1)
+                addspecialstuff("circle", [[WHITE, 100]], [-50, 250], [25], [[0, 0, 30]], 10, [True, -10, -10])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=98*wormspeed, sprited=[True, tail1])
+                for i in range(wormlength):
+                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=5, timecounter=(99+ 2 * i)*wormspeed, sprited=[True, body1])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=(99 + wormlength * 2)*wormspeed, sprited=[True, head1])
+            elif ticks > 100: 
+                if (ticks+25)%500 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                if ticks%500 == 0:    
+                    addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
+                    addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
+                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
+                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                if (ticks)%500 == 0:
+                    wormspeed = 2
+                if (ticks+150)%500 == 0:
+                    wormspeed = 1
+        
+        
         
         
         
@@ -369,7 +418,11 @@ while True:
         
         
         texttoprint[1] -= 1
-        screen.fill(WHITE)
+        if background == False:
+            screen.fill(WHITE)
+        else:
+            #screen.blit(bg, (0, 0))
+            screen.fill(BLACK)
         screen.blit(font.render(texttoprint[0], True, GREEN), (WIDTH / 2 - len(texttoprint[0]) * 9, HEIGHT / 2 - 50))
 
         #Projectiles moving & drawing:
@@ -458,23 +511,38 @@ while True:
         
         for i in list(VerySpecialStuff.keys()):
             crdvar = VerySpecialStuff[i]["cords"]
-            VerySpecialStuff[i]["time"] += 1
+            VerySpecialStuff[i]["time"] += wormspeed
             timetemp = VerySpecialStuff[i]["time"] / 100
 
 
             #movetocenter
             if "movetocenterfromleft" in VerySpecialStuff[i]["pathing"]:
                 vctr = [3000, 0]
-                goto = [-1800 + (300 * timetemp * 4), 250]
+                goto = [(-1800 * int(wormlength / 51)) + (300 * timetemp * 4), 250]
                 VerySpecialStuff[i]["cords"] = goto
-                if int(VerySpecialStuff[i]["cords"][0]) == 300:
+                if VerySpecialStuff[i]["sprited"][0] == True:
+                    offsetx, offsety = VerySpecialStuff[i]["sprited"][1].get_size() 
+                    screen.blit(pygame.transform.rotate(VerySpecialStuff[i]["sprited"][1], 270), [goto[0] - offsetx / 2, 250 - offsety / 2])
+                if int(VerySpecialStuff[i]["cords"][0]) > 299:
                     VerySpecialStuff[i]["pathing"] = VerySpecialStuff[i]["pathing"][20:]
                     VerySpecialStuff[i]["time"] = 0
             #sine rose curve pathing
             elif "rosecurve" in VerySpecialStuff[i]["pathing"]:
-                goto = [x * 350 * math.sin(4*timetemp) for x in makeunitvector([(math.cos(timetemp)), (math.sin(timetemp))])]
+                unitvectvar = makeunitvector([(math.cos(timetemp)), (math.sin(timetemp))])
+                goto = [x * 350 * math.sin(4*timetemp) for x in unitvectvar]
                 VerySpecialStuff[i]["cords"] = [300 + goto[0], 250 + goto[1]]
+                #angle = math.sin(unitvectvar[1])
                 
+                #angle = -(4*timetemp)
+                if VerySpecialStuff[i]["sprited"][0] == True:
+                    if "circle" in i:
+                        offsetx, offsety = VerySpecialStuff[i]["sprited"][1].get_size()
+                    else:
+                        offsetx, offsety = 0, 0
+                    deltaX = goto[0] - unitvectvar[0]
+                    deltaY = goto[1] - unitvectvar[1]
+                    angle = math.atan2(deltaX, deltaY) *180 / math.pi
+                    screen.blit(pygame.transform.rotate(VerySpecialStuff[i]["sprited"][1], angle), [300 + goto[0] - offsetx / 2, 250 + goto[1] - offsety / 2])
 
             if len(VerySpecialStuff[i]["color"]) > 1:
                 if VerySpecialStuff[i]["color"][0][1] > 0:
@@ -483,7 +551,8 @@ while True:
                     del VerySpecialStuff[i]["color"][0]
             clr = VerySpecialStuff[i]["color"][0][0]
             if "rect" in i:
-                pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], VerySpecialStuff[i]["size"][0], VerySpecialStuff[i]["size"][1]))
+                if VerySpecialStuff[i]["sprited"][0] == False or debug:
+                    pygame.draw.rect(screen, clr, (crdvar[0], crdvar[1], VerySpecialStuff[i]["size"][0], VerySpecialStuff[i]["size"][1]))
                 if crdvar[0] <= x and (crdvar[0] + VerySpecialStuff[i]["size"][0]) >= x and crdvar[1] <= y and (crdvar[1] + VerySpecialStuff[i]["size"][1]) >= y:
                     #print("collision with rect obj")
                     if iframes <= 0:
@@ -491,7 +560,8 @@ while True:
                         HP -= VerySpecialStuff[i]["damage"]
                         iframes = 10
             if "circle" in i:
-                pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), VerySpecialStuff[i]["size"][0])
+                if VerySpecialStuff[i]["sprited"][0] == False or debug:
+                    pygame.draw.circle(screen, clr, (crdvar[0], crdvar[1]), VerySpecialStuff[i]["size"][0])
                 if (crdvar[0] + VerySpecialStuff[i]["size"][0] > x and crdvar[0] - VerySpecialStuff[i]["size"][0] < x) and (crdvar[1] + VerySpecialStuff[i]["size"][0] > y and crdvar[1] - VerySpecialStuff[i]["size"][0] < y):
                     if iframes <= 0:
                         #print("insert damage here")
@@ -624,13 +694,13 @@ while True:
         
         if timetaken > 0.1:
             print(f"Long frame! {timetaken}")
-        if HP <= 0:
-            pygame.mixer.music.stop()
-            print("l")
-            movementground = False
-            mainmenu = True
-            ground2 = False
-            COLOR = (255, 0, 0)
+        #if HP <= 0:
+            #pygame.mixer.music.stop()
+            p#rint("l")
+            #movementground = False
+            #mainmenu = True
+            #ground2 = False
+            #COLOR = (255, 0, 0)
         
         
         
@@ -1163,10 +1233,10 @@ while True:
             stf += 1
         spcstf = 0
         for i in list(SpecialStuff.keys()):
-            
+            crdvar = SpecialStuff[i]["cords"]
             if len(SpecialStuff[i]["vector"]) > 0:
                 if SpecialStuff[i]["vector"][0][2] > 0:
-                    crdvar = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
+                    SpecialStuff[i]["cords"] = [crdvar[0] + SpecialStuff[i]["vector"][0][0],crdvar[1] + SpecialStuff[i]["vector"][0][1]]
                     SpecialStuff[i]["vector"][0][2] = SpecialStuff[i]["vector"][0][2] - 1
                 if SpecialStuff[i]["vector"][0][2] <= 0:
                     del SpecialStuff[i]["vector"][0]
@@ -1724,7 +1794,3 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
-
-
-
-
