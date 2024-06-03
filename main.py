@@ -85,6 +85,7 @@ ticksgh = 0
 offset = 0
 resetgravity = False
 resetgravityh = False
+texttoprint = ["", 0]
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
 def addstuff(obj, color, cords, size, vector, damage=5):
     global Stuff
@@ -156,17 +157,19 @@ def makeunitvector(vector):
 rvar = 10
 wormlength = 51
 wormspeed = 1
-mainmenu = True
+mainmenu = False
 movementground = False
 ground2 = False
-hyperfancystuff = False
+hyperfancystuff = True
 background = False
 debug = False
-phase1 = False
+phase1 = True
 phase2 = False
+ticks = 0 
 while True:
     #Main menu
     while mainmenu:
+
         rvar = 10
         r2var = 10
         r3var = 10
@@ -184,7 +187,7 @@ while True:
                     
                     print(f"x: {x}, y: {y}")
                     while rvar > 0:
-                        rvar -= 0.003
+                        rvar -= 0.23
                         screen.fill(BLACK)
                         pygame.draw.circle(screen, RED, (WIDTH / 2, HEIGHT / 2), rvar)
                         pygame.display.update()
@@ -202,7 +205,7 @@ while True:
                     pygame.mixer.music.set_volume(0.5)
                 if x1 > 200 - r and x1 < 200 + r and y1 < 250 + r and y1 > 250 - r:
                     while r2var > 0:
-                        r2var -= 0.003
+                        r2var -= 0.223
                         screen.fill(BLACK)
                         pygame.draw.circle(screen, ORANGE, (200, 250), r2var)
                         pygame.display.update()
@@ -225,6 +228,7 @@ while True:
                     pygame.mixer.music.play(1)
                     safeguard = False
                 if x1 > 400 - r and x1 < 400 + r and y1 < 250 + r and y1 > 250 - r:
+                    print("aaaaaaa")
                     while r3var > 0:
                         r3var -= 0.2
                         screen.fill(BLACK)
@@ -254,7 +258,7 @@ while True:
                     background = False
         screen.blit(text, (20, 20))
         pygame.display.update()
-        
+        clock.tick(FPS)
         
         
     #Green
@@ -429,12 +433,14 @@ while True:
                         #print("deleting")
                         del VerySpecialStuff[i]
                     continue
-                pygame.mixer.music.fadeout(3000)
+                if len(VerySpecialStuff) == 15:
+                    pygame.mixer.music.fadeout(3000)
                 if len(VerySpecialStuff) == 0:
                     
                     phase1 = False
                     phase2 = True
                     pygame.mixer.Sound.play(laugh_sound)
+                    ticks = 0
                     #pygame.mixer.music.load('DoGMusic2.mp3')
                     #pygame.mixer.music.set_volume(0.3)                                     
                     #pygame.mixer.music.play(1)
@@ -445,10 +451,11 @@ while True:
                 pygame.mixer.music.play(1)
             elif ticksm < 300:
                 pass
-            elif ticksm < 540:
+            elif ticks < 540:
                 if ticks%5 == 0:
                     addspecialstuff("circle", [[LIGHTPURPLE, 100]], [-5 + random.randint(0, 25), 250 + random.randint(-25, 25)], [50], [[0, 0, 40]], 10, gravity=[True, -0.05, -0.05])
-            if ticksm > 540 and not safeguard:
+            elif ticks > 540 and not safeguard:
+                #background = False
                 safeguard = True
                 wormlength = 55
                 wormspeed = 2
@@ -479,6 +486,7 @@ while True:
         
         texttoprint[1] -= 1
         if background == False:
+            #pass
             screen.fill(WHITE)
         else:
             #screen.blit(bg, (0, 0))
@@ -616,7 +624,7 @@ while True:
             elif "rose2curve" in VerySpecialStuff[i]["pathing"]:
                 temptime = timetemp/2
                 unitvectvar = makeunitvector([(math.cos(temptime)), (math.sin(temptime))])
-                goto = [x * 400 * math.sin(4*temptime) for x in unitvectvar]
+                goto = [x * 400 * math.sin(math.pi*temptime) for x in unitvectvar]
                 VerySpecialStuff[i]["cords"] = [300 + goto[0], 250 + goto[1]]
                 #angle = math.sin(unitvectvar[1])
                 
