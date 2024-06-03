@@ -403,7 +403,7 @@ while True:
                 elif ticks > 100:
                     if len(VerySpecialStuff) > 0:
                         ticksfadeout = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["time"] + 180
-                    if (ticks+25)%500 == 0:
+                    if (ticks+50)%500 == 0:
                         pygame.mixer.Sound.play(laser_sound)
                     if ticks%500 == 0:    
                         addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
@@ -449,7 +449,18 @@ while True:
                 for i in range(wormlength):
                     addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=5, timecounter=(99+ 2 * i)*wormspeed, sprited=[True, body1])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [25], "movetocenterfromleft rosecurve", damage=35, timecounter=(99 + wormlength * 2)*wormspeed, sprited=[True, head1])
-        
+            elif ticks < 15360:
+                if (ticks+50)%500 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                if ticks%500 == 0:    
+                    addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
+                    addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
+                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
+                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                if (ticks+150)%1500 == 0:
+                    wormspeed = 4
+                if (ticks)%1500 == 0:
+                    wormspeed = 2
         
         
         
