@@ -39,6 +39,7 @@ CD = 5
 iframes = 0
 pygame.display.set_caption('gameing')
 pi23 = math.pi * 2 / 3
+pi47 = math.pi * 4 / 7
 #This is just here for when I add multiple screens in the future
 
 font = pygame.font.Font('freesansbold.ttf', 32)
@@ -87,7 +88,7 @@ resetgravity = False
 resetgravityh = False
 texttoprint = ["", 0]
 #limbo = pygame.mixer.Sound("limbojumpscare.mp3") 
-def addstuff(obj, color, cords, size, vector, damage=5):
+def addstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [0, 0]]):
     global Stuff
     global intv
     intv += 1
@@ -97,7 +98,8 @@ def addstuff(obj, color, cords, size, vector, damage=5):
             "cords": cords,
             "size": size,
             "vector": vector,
-            "damage": damage
+            "damage": damage,
+            "gravity": gravity
         }
     })
 def addspecialstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [0, 0]]):
@@ -265,6 +267,7 @@ while True:
     #Green
     while hyperfancystuff:
         ticks += 1
+        HP += 0.01
         timev = time.time()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -323,7 +326,7 @@ while True:
                     
                     addspecialstuff("circle", [[WHITE, 100]], [300, 500], [25], [[0, 0, 15000]], 10, [True, 0, 4])
                 if event.key == pygame.K_2:
-                    offset = 3000
+                    offset = 3000 - ticksm
                 if event.key == pygame.K_h:
                     HP += 100
                 if event.key == pygame.K_a:
@@ -438,20 +441,20 @@ while True:
                         #print("deleting")
                         del VerySpecialStuff[i]
                     continue
-                if len(VerySpecialStuff) == 15:
-                    pygame.mixer.music.fadeout(3000)
+                if len(VerySpecialStuff) == 20:
+                    pygame.mixer.music.fadeout(1000)
                 if len(VerySpecialStuff) == 0:
                     
                     phase1 = False
                     phase2 = True
                     pygame.mixer.Sound.play(laugh_sound)
                     ticks = 0
-                    #pygame.mixer.music.load('DoGMusic2.mp3')
+                    pygame.mixer.music.load('DoGMusic2.wav')
                     #pygame.mixer.music.set_volume(0.3)                                     
                     #pygame.mixer.music.play(1)
         elif phase2:
             if ticksm == 0:
-                pygame.mixer.music.load('DoGMusic2.wav')
+                #pygame.mixer.music.load('DoGMusic2.wav')
                 pygame.mixer.music.set_volume(0.3)                                     
                 pygame.mixer.music.play(1)
             elif ticksm < 300:
@@ -469,8 +472,8 @@ while True:
             elif ticksm > 540 and not safeguard:
                 #background = False
                 safeguard = True
-                wormlength = 55
-                wormspeed = 2
+                wormlength = 30
+                wormspeed = 3
                 addspecialstuff("circle", [[WHITE, 100]], [-50, 250], [25], [[0, 0, 30]], 10, [True, -10, -10])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose2curve", damage=35, timecounter=97*wormspeed, sprited=[True, tail2])
                 for i in range(wormlength):
@@ -485,6 +488,8 @@ while True:
                     addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
                     addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
             #bossfight lasts until ticks = 15360
+            elif ticksm < 1600:
+                wormspeed = 3
             elif ticksm < 3500:
                 if (ticks+50)%500 == 0:
                     pygame.mixer.Sound.play(laser_sound)
@@ -495,9 +500,9 @@ while True:
                     addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
                 if (ticks+250)%1500 == 0:
                     #pygame.mixer.Sound.play(laugh_sound)
-                    wormspeed = 4
+                    wormspeed = 6
                 if (ticks)%1500 == 0:
-                    wormspeed = 2
+                    wormspeed = 3
                 if len(VerySpecialStuff) > 0:
                     ticksfadeout = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["time"] + 500
             elif ticksm < 3850:
@@ -507,11 +512,14 @@ while True:
                         addspecialstuff("circle", [[LIGHTPURPLE, 100]], [VerySpecialStuff[i]["cords"][0] + random.randint(-10, 10), VerySpecialStuff[i]["cords"][1] + random.randint(-10, 10)], [50], [[0, 0, 10]], 10, gravity=[True, -0.1, -0.1])
                         #print("deleting")
                         del VerySpecialStuff[i]
+                        soundplayed = False
                     continue
                 if len(VerySpecialStuff) == 0:
                     phase1 = False
                     phase2 = True
-                    pygame.mixer.Sound.play(laugh_sound)
+                    if not soundplayed:
+                        pygame.mixer.Sound.play(laugh_sound)
+                        soundplayed = True
                     safeguard2 = False
             elif ticksm < 5000:
                 if ticks%100 == 0:
@@ -525,12 +533,12 @@ while True:
                 #background = False
                 safeguard2 = True
                 wormlength = 58
-                wormspeed = 2.5
+                wormspeed = 1
                 addspecialstuff("circle", [[WHITE, 100]], [-50, 250], [25], [[0, 0, 30]], 10, [True, -10, -10])
-                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose2curve", damage=35, timecounter=97*wormspeed, sprited=[True, tail2])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose3curve", damage=35, timecounter=97*wormspeed, sprited=[True, tail2])
                 for i in range(wormlength):
-                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose2curve", damage=5, timecounter=(99+ 4 * i)*wormspeed, sprited=[True, body2])
-                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromfarleft rose2curve", damage=35, timecounter=(99 + wormlength * 4)*wormspeed, sprited=[True, head2])
+                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose3curve", damage=5, timecounter=(99+ 4 * i)*wormspeed, sprited=[True, body2])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromfarleft rose3curve", damage=35, timecounter=(99 + wormlength * 4)*wormspeed, sprited=[True, head2])
             elif ticksm < 5600:
                 if (ticks+50)%500 == 0:
                     pygame.mixer.Sound.play(laser_sound)
@@ -551,8 +559,8 @@ while True:
                     #pygame.mixer.Sound.play(laugh_sound)
                     wormspeed = 6
                 if (ticks+125)%750 == 0:
-                    cordsofhead = VerySpecialStuff[0]["cords"]
-                    addstuff("homingcircle", WHITE, cordsofhead, [25], [0, 0])
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["cords"]
+                    addstuff("circle", WHITE, headcords, [25], [x*5 for x in makeunitvector([headcords[0]-x, headcords[1]-y])], gravity=[True, -5, -5])
                 if (ticks)%1500 == 0:
                     wormspeed = 2.5
         
@@ -605,6 +613,18 @@ while True:
             if "homing" in i:
                 unitvect = makeunitvector([x - Stuff[i]["cords"][0], y - Stuff[i]["cords"][1]])
                 Stuff[i]["vector"] = [Stuff[i]["vector"][0] + 0.1 * unitvect[0], Stuff[i]["vector"][1] + 0.1 * unitvect[1]]
+
+            if Stuff[i]["gravity"][0]:
+                #print(SpecialStuff[i]["gravity"])
+                dist = math.sqrt(((crdvar[0] - x) ** 2) + ((crdvar[1] - y) ** 2))
+                if x > crdvar[0]:
+                    gravityh -= Stuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                elif x < crdvar[0]:
+                    gravityh += Stuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                if y > crdvar[1]:
+                    gravity -= Stuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+                elif y < crdvar[1]:
+                    gravity += Stuff[i]["gravity"][2] / ((dist * 0.04) + 1)
             stf += 1
         spcstf = 0
         for i in list(SpecialStuff.keys()):
@@ -672,7 +692,7 @@ while True:
                     VerySpecialStuff[i]["time"] = 0
             elif "movetocenterfromfarleft" in VerySpecialStuff[i]["pathing"]:
                 vctr = [3000, 0]
-                goto = [(-4500 * int(wormlength / 51) * wormspeed) + (300 * timetemp * 4), 250]
+                goto = [(-3500 * int((51 + wormlength) / 51) * wormspeed) + (300 * timetemp * 4), 250]
                 VerySpecialStuff[i]["cords"] = goto
                 if VerySpecialStuff[i]["sprited"][0] == True:
                     offsetx, offsety = VerySpecialStuff[i]["sprited"][1].get_size() 
@@ -713,6 +733,23 @@ while True:
                     deltaX = goto[0] - unitvectvar[0]
                     deltaY = goto[1] - unitvectvar[1]
                     angle = math.atan2(deltaX, deltaY) *180 / math.pi
+                    screen.blit(pygame.transform.rotate(VerySpecialStuff[i]["sprited"][1], angle), [300 + goto[0] - offsetx / 2, 250 + goto[1] - offsety / 2])
+            elif "rose3curve" in VerySpecialStuff[i]["pathing"]:
+                temptime = timetemp / 2
+                unitvectvar = makeunitvector([(math.cos(temptime)), (math.sin(temptime))])
+                goto = [x * 550 * math.sin(pi47 * temptime) for x in unitvectvar]
+                VerySpecialStuff[i]["cords"] = [300 + goto[0], 250 + goto[1]]
+                # angle = math.sin(unitvectvar[1])
+
+                # angle = -(4*timetemp)
+                if VerySpecialStuff[i]["sprited"][0] == True:
+                    if "circle" in i:
+                        offsetx, offsety = VerySpecialStuff[i]["sprited"][1].get_size()
+                    else:
+                        offsetx, offsety = 0, 0
+                    deltaX = goto[0] - unitvectvar[0]
+                    deltaY = goto[1] - unitvectvar[1]
+                    angle = math.atan2(deltaX, deltaY) * 180 / math.pi
                     screen.blit(pygame.transform.rotate(VerySpecialStuff[i]["sprited"][1], angle), [300 + goto[0] - offsetx / 2, 250 + goto[1] - offsety / 2])
             if len(VerySpecialStuff[i]["color"]) > 1:
                 if VerySpecialStuff[i]["color"][0][1] > 0:
