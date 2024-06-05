@@ -17,6 +17,7 @@ GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 ORANGE = (255, 165, 0)
 BLUE = (0, 0, 255)
+CYAN = (0,255,255)
 RED = (255, 0, 0)
 WIDTH = 600
 HEIGHT = 500
@@ -60,6 +61,7 @@ Stuff = {}
 SpecialStuff = {}
 PlatformStuff = {}
 VerySpecialStuff = {}
+OverlayStuff = {}
 laser_sound = pygame.mixer.Sound("laser.wav")
 spawn_sound = pygame.mixer.Sound("Spawn.wav")
 laugh_sound = pygame.mixer.Sound("DoGLaugh.wav")
@@ -80,6 +82,9 @@ window = Window.from_display_module()
 windowpos = window.position
 clr = (0, 0, 0)
 safeguard = False
+safeguard2 = False
+safeguard3 = False
+safeguard4 = False
 gravity = 0
 ticksg = 0
 gravityh = 0
@@ -94,6 +99,20 @@ def addstuff(obj, color, cords, size, vector, damage=5, gravity=[False, [0, 0]])
     global intv
     intv += 1
     Stuff.update({
+        f"{obj}{intv}": {
+            "color": color,
+            "cords": cords,
+            "size": size,
+            "vector": vector,
+            "damage": damage,
+            "gravity": gravity
+        }
+    })
+def addoverlaystuff(obj, color, cords, size, vector, damage=5, gravity=[False, [0, 0]]):
+    global OverlayStuff
+    global intv
+    intv += 1
+    OverlayStuff.update({
         f"{obj}{intv}": {
             "color": color,
             "cords": cords,
@@ -332,6 +351,10 @@ while True:
                     safeguard2 = True
                     safeguard3 = False
                     offset = 6600 - ticksm
+                if event.key == pygame.K_4:
+                    safeguard2 = True
+                    safeguard3 = False
+                    offset = 11000 - ticksm
                 if event.key == pygame.K_h:
                     HP += 100
                 if event.key == pygame.K_a:
@@ -595,17 +618,85 @@ while True:
                 wormspeed = 1.25
                 addspecialstuff("circle", [[WHITE, 100]], [300, -50], [25], [[0, 0, 30]], 10, [True, -10, -10])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [35], "movetocenterfromtop rose4curve",
-                                    damage=35, timecounter=97 * wormspeed, sprited=[True, tail2])
+                                    damage=45, timecounter=97 * wormspeed, sprited=[True, tail2])
                 for i in range(wormlength):
                     addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [35],
-                                        "movetocenterfromtop rose4curve", damage=5,
+                                        "movetocenterfromtop rose4curve", damage=10,
                                         timecounter=(99 + 4 * i) * wormspeed, sprited=[True, body2])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromtop rose4curve",
-                                    damage=35, timecounter=(99 + wormlength * 4) * wormspeed, sprited=[True, head2])
-            #add another phase at ticksm = 7500
-        
-        
-        
+                                    damage=45, timecounter=(99 + wormlength * 4) * wormspeed, sprited=[True, head2])
+            elif ticksm < 8000:
+                if (ticks+55)%200 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                if (ticks+30)%200 == 0:
+                    addoverlaystuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 18], damage=10)
+                    addoverlaystuff("rect", LIGHTPURPLE, [x, 550], [12, 50], [0, -18], damage=10)
+                    addoverlaystuff("rect", LIGHTPURPLE, [-50, y], [50, 12], [18, 0], damage=10)    
+                    addoverlaystuff("rect", LIGHTPURPLE, [650, y], [50, 12], [-18, 0], damage=10)
+                if (ticks)%200 == 0:
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
+            elif ticksm < 11500:
+                if (ticks+55)%200 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                if (ticks+30)%200 == 0:
+                    addoverlaystuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 18], damage=10)
+                    addoverlaystuff("rect", LIGHTPURPLE, [x, 550], [12, 50], [0, -18], damage=10)
+                    addoverlaystuff("rect", LIGHTPURPLE, [-50, y], [50, 12], [18, 0], damage=10)    
+                    addoverlaystuff("rect", LIGHTPURPLE, [650, y], [50, 12], [-18, 0], damage=10)
+                    wormspeed = 2.5
+                if (ticks)%200 == 0:
+                    wormspeed = 1.25
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
+                if len(VerySpecialStuff) > 0:
+                    ticksfadeout = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["time"] + 600
+            elif ticksm < 12200:
+                #texttoprint = ["A GOD DOES NOT FEAR DEATH", 100]
+                for i in list(VerySpecialStuff.keys()):
+                    if VerySpecialStuff[i]["time"] > ticksfadeout:
+                        addspecialstuff("circle", [[LIGHTPURPLE, 100]], [VerySpecialStuff[i]["cords"][0] + random.randint(-10, 10), VerySpecialStuff[i]["cords"][1] + random.randint(-10, 10)], [50], [[0, 0, 10]], 10, gravity=[True, -0.1, -0.1])
+                        del VerySpecialStuff[i]
+                    continue
+                if len(VerySpecialStuff) == 0:
+                    safeguard4 = False
+            elif ticksm < 12500 and not safeguard4:
+                safeguard4 = True
+                wormlength = 20
+                wormspeed = 3
+                tickstotp = 0
+                addspecialstuff("circle", [[WHITE, 100]], [300, -50], [25], [[0, 0, 30]], 10, [True, -10, -10])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [35], "movetocenterfromtop rose4curve",
+                                    damage=45, timecounter=97 * wormspeed, sprited=[True, tail2])
+                for i in range(wormlength):
+                    addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [35],
+                                        "movetocenterfromtop rose4curve", damage=10,
+                                        timecounter=(99 + 4 * i) * wormspeed, sprited=[True, body2])
+                addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromtop rose4curve",
+                                    damage=45, timecounter=(99 + wormlength * 4) * wormspeed, sprited=[True, head2])
+            elif ticksm < 12500:
+                pass
+            elif ticksm < 15800:
+                if ticks%1000 == 0:
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    tickstotp = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["time"] + 250
+                if (ticks - 250)%1000 == 0:
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
+                for i in list(VerySpecialStuff.keys()):
+                    if VerySpecialStuff[i]["time"] == tickstotp:
+                        VerySpecialStuff[i]["time"] += 600
+                        addspecialstuff("circle", [[LIGHTPURPLE, 100]], [VerySpecialStuff[i]["cords"][0] + random.randint(-10, 10), VerySpecialStuff[i]["cords"][1] + random.randint(-10, 10)], [50], [[0, 0, 10]], 10, gravity=[True, -0.1, -0.1])
+
         
         texttoprint[1] -= 1
         if background == False:
@@ -614,7 +705,7 @@ while True:
         else:
             #screen.blit(bg, (0, 0))
             screen.fill(BLACK)
-        screen.blit(font.render(texttoprint[0], True, GREEN), (WIDTH / 2 - len(texttoprint[0]) * 9, HEIGHT / 2 - 50))
+        screen.blit(font.render(texttoprint[0], True, CYAN), (WIDTH / 2 - len(texttoprint[0]) * 9, HEIGHT / 2 - 50))
 
         #Projectiles moving & drawing:
         stf = 0  #just a counter variable
@@ -802,7 +893,7 @@ while True:
             elif "rose4curve" in VerySpecialStuff[i]["pathing"]:
                 temptime = timetemp / 2
                 unitvectvar = makeunitvector([(math.cos(temptime)), (math.sin(temptime))])
-                goto = [x * 550 * math.sin(pi87 * temptime) for x in unitvectvar]
+                goto = [x * 350 * math.sin(pi87 * temptime) for x in unitvectvar]
                 VerySpecialStuff[i]["cords"] = [300 + goto[0], 250 + goto[1]]
                 # angle = math.sin(unitvectvar[1])
 
@@ -940,6 +1031,56 @@ while True:
                     gravity -= PlatformStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
                 elif y < crdvar[1]:
                     gravity += PlatformStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+                    
+                    
+        stf = 0  #just a counter variable
+        for i in list(OverlayStuff.keys()):
+            OverlayStuff[i]["cords"] = [OverlayStuff[i]["cords"][0] + OverlayStuff[i]["vector"][0],OverlayStuff[i]["cords"][1] + OverlayStuff[i]["vector"][1]]
+            addstf = True
+            if OverlayStuff[i]["cords"][0] > WIDTH + 100 or OverlayStuff[i]["cords"][0] < -100 or OverlayStuff[i]["cords"][1] > HEIGHT + 100 or OverlayStuff[i]["cords"][1] < -100:
+                del OverlayStuff[i]
+                continue
+
+            #draw the stuff + collisions (because of course circles are centered but rectangles aren't, which makes sense but still is annoying)
+            if "rect" in i:
+                pygame.draw.rect(screen, OverlayStuff[i]["color"], (OverlayStuff[i]["cords"][0], OverlayStuff[i]["cords"][1], OverlayStuff[i]["size"][0], OverlayStuff[i]["size"][1]))
+                if OverlayStuff[i]["cords"][0] <= x and (OverlayStuff[i]["cords"][0] + OverlayStuff[i]["size"][0]) >= x and OverlayStuff[i]["cords"][1] <= y and (OverlayStuff[i]["cords"][1] + OverlayStuff[i]["size"][1]) >= y:
+                    #print("collision with rect obj")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= OverlayStuff[i]["damage"]
+                        iframes = 10
+
+            if "circle" in i:
+                pygame.draw.circle( screen, OverlayStuff[i]["color"], (OverlayStuff[i]["cords"][0], OverlayStuff[i]["cords"][1]), OverlayStuff[i]["size"][0])
+                if (OverlayStuff[i]["cords"][0] + OverlayStuff[i]["size"][0] > x and OverlayStuff[i]["cords"][0] - OverlayStuff[i]["size"][0] < x) and (OverlayStuff[i]["cords"][1] + OverlayStuff[i]["size"][0] > y and OverlayStuff[i]["cords"][1] - OverlayStuff[i]["size"][0] < y):
+                    #print("collision with circle obj")
+                    #print("y collision")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= OverlayStuff[i]["damage"]
+                        iframes = 10
+
+            #accelerate stuff with the "accel" tag
+            if "accel" in i:
+                OverlayStuff[i]["vector"] = [OverlayStuff[i]["vector"][0] * 1.05,OverlayStuff[i]["vector"][1] * 1.05]
+            #home in the homing stuff
+            if "homing" in i:
+                unitvect = makeunitvector([x - OverlayStuff[i]["cords"][0], y - OverlayStuff[i]["cords"][1]])
+                OverlayStuff[i]["vector"] = [OverlayStuff[i]["vector"][0] + 0.1 * OverlayStuff[0], OverlayStuff[i]["vector"][1] + 0.1 * unitvect[1]]
+
+            if OverlayStuff[i]["gravity"][0]:
+                #print(SpecialStuff[i]["gravity"])
+                dist = math.sqrt(((crdvar[0] - x) ** 2) + ((crdvar[1] - y) ** 2))
+                if x > crdvar[0]:
+                    gravityh -= OverlayStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                elif x < crdvar[0]:
+                    gravityh += OverlayStuff[i]["gravity"][1] / ((dist * 0.04) + 1)
+                if y > crdvar[1]:
+                    gravity -= OverlayStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+                elif y < crdvar[1]:
+                    gravity += OverlayStuff[i]["gravity"][2] / ((dist * 0.04) + 1)
+            stf += 1
         #Move the character:
         x += movement[0] * speedx
         y += movement[1] * speedy
@@ -2066,5 +2207,6 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
 
 
