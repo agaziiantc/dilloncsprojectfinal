@@ -19,6 +19,7 @@ ORANGE = (255, 165, 0)
 BLUE = (0, 0, 255)
 CYAN = (0,255,255)
 RED = (255, 0, 0)
+BG = WHITE
 WIDTH = 600
 HEIGHT = 500
 x = WIDTH / 2
@@ -65,6 +66,11 @@ OverlayStuff = {}
 laser_sound = pygame.mixer.Sound("laser.wav")
 spawn_sound = pygame.mixer.Sound("Spawn.wav")
 laugh_sound = pygame.mixer.Sound("DoGLaugh.wav")
+break1 = pygame.mixer.Sound("break1.wav")
+break2 = pygame.mixer.Sound("break2.wav")
+break3 = pygame.mixer.Sound("break3.wav")
+break4 = pygame.mixer.Sound("break4.wav")
+death = pygame.mixer.Sound("death.wav")
 head1 = pygame.image.load("head1.png")
 body1 = pygame.image.load("body1.png")
 tail1 = pygame.image.load("tail1.png")
@@ -355,6 +361,15 @@ while True:
                     safeguard2 = True
                     safeguard3 = False
                     offset = 11000 - ticksm
+                    pos = pygame.mixer.music.set_pos(11000 / 60)
+                if event.key == pygame.K_5:
+                    safeguard1 = True
+                    safeguard2 = True
+                    safeguard3 = True
+                    safeguard4 = False
+                    tickstotp = 0
+                    offset = 14000 - ticksm
+                    pos = pygame.mixer.music.set_pos(14000 / 60)
                 if event.key == pygame.K_h:
                     HP += 100
                 if event.key == pygame.K_a:
@@ -431,11 +446,12 @@ while True:
         pos = pygame.mixer.music.get_pos()
         ticksm = int((60 / 1000) * pos) + offset#ticksm = music based ticks
         if phase1:
-            if ticksm + 13440 < 13740:
+            #really short because phase 1 is boring and I cannot be bothered to make it not boring
+            if ticksm < 2400:
                 
                 if ticks == 100:
                     pygame.mixer.Sound.play(spawn_sound)
-                    background = True
+                    BG = BLACK
                     pygame.mixer.music.load('DoGMusic1.mp3')
                     pygame.mixer.music.set_volume(0.3)                                     
                     pygame.mixer.music.play(1)
@@ -683,7 +699,8 @@ while True:
                                     damage=45, timecounter=(99 + wormlength * 4) * wormspeed, sprited=[True, head2])
             elif ticksm < 12500:
                 pass
-            elif ticksm < 15800:
+            elif ticksm < 14950:
+                HP += 0.05
                 if (ticks)%250 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     addstuff("circle", WHITE, headcords, [25], [x*5 for x in makeunitvector([x-headcords[0], y-headcords[1]])], gravity=[True, -2, -2])
@@ -694,10 +711,31 @@ while True:
                     addoverlaystuff("rect", LIGHTPURPLE, [x, 550], [12, 50], [0, -20], damage=12)
                     addoverlaystuff("rect", LIGHTPURPLE, [-50, y], [50, 12], [20, 0], damage=12)
                     addoverlaystuff("rect", LIGHTPURPLE, [650, y], [50, 12], [-20, 0], damage=12)
-                if ticks%1000 == 0:
+                if (ticks)%300 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                    localheadcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [12, 50], [0, 5], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [12, 50], [0, -5],damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [50, 12], [5, 0], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [50, 12], [-5, 0],damage=12)
+                if (ticks+10)%300 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                    localheadcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [12, 50], [0, 5], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [12, 50], [0, -5], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [50, 12], [5, 0], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [50, 12], [-5, 0], damage=12)
+                if (ticks+20)%300 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                    localheadcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [12, 50], [0, 5],damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [12, 50], [0, -5],damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [50, 12], [5, 0],damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [localheadcords[0], localheadcords[1]], [50, 12], [-5, 0],damage=12)
+                if ticks%900 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     tickstotp = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["time"] + 250
-                if (ticks - 100)%1000 == 0:
+                if (ticks - 80)%900 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
@@ -721,14 +759,39 @@ while True:
                                          250 + goto[1] + random.randint(-10, 10)],
                                         [50], [[0, 0, 10]],
                                         10, gravity=[True, -0.1, -0.1])
-        
+                if len(VerySpecialStuff) > 0:
+                    ticksfadeout = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["time"] + 270
+            elif ticksm < 15800:
+                phase2 = False
+                phase3 = True
+
+        elif phase3:
+            partlist = list(VerySpecialStuff.keys()) #yes I know this is unoptimized but at this point I do not care
+            partlist.reverse()
+            if BG[0] < 255 and BG[1] < 255 and BG[2] < 255:
+                BG = (BG[0] + 0.5, BG[1] + 0.5, BG[2] + 0.5)
+            else:
+                BG = (255, 255, 255)
+            for i in list(VerySpecialStuff.keys()):
+                if VerySpecialStuff[i]["time"] > ticksfadeout:
+                    randvar = random.randint(1,4)
+                    if randvar == 1:
+                        pygame.mixer.Sound.play(break1)
+                    elif randvar == 2:
+                        pygame.mixer.Sound.play(break2)
+                    elif randvar == 3:
+                        pygame.mixer.Sound.play(break3)
+                    elif randvar == 4:
+                        pygame.mixer.Sound.play(break4)
+                    del VerySpecialStuff[partlist[-1]]
+                    wormspeed -= 0.14
+                    ticksfadeout += wormspeed * 20
+            if len(VerySpecialStuff) == 0:
+                pygame.mixer.Sound.play(death)
+                phase3 = False
+        #reminder to do death animation at 15000 ticksm
         texttoprint[1] -= 1
-        if background == False:
-            #pass
-            screen.fill(WHITE)
-        else:
-            #screen.blit(bg, (0, 0))
-            screen.fill(BLACK)
+        screen.fill(BG)
         screen.blit(font.render(texttoprint[0], True, CYAN), (WIDTH / 2 - len(texttoprint[0]) * 9, HEIGHT / 2 - 50))
 
         #Projectiles moving & drawing:
