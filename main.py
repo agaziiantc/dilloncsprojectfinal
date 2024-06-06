@@ -639,7 +639,7 @@ while True:
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
-            elif ticksm < 11500:
+            elif ticksm < 11400:
                 if (ticks+55)%200 == 0:
                     pygame.mixer.Sound.play(laser_sound)
                 if (ticks+30)%200 == 0:
@@ -657,8 +657,8 @@ while True:
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
                 if len(VerySpecialStuff) > 0:
                     ticksfadeout = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["time"] + 600
-            elif ticksm < 12200:
-                #texttoprint = ["A GOD DOES NOT FEAR DEATH", 100]
+            elif ticksm < 12000:
+
                 for i in list(VerySpecialStuff.keys()):
                     if VerySpecialStuff[i]["time"] > ticksfadeout:
                         addspecialstuff("circle", [[LIGHTPURPLE, 100]], [VerySpecialStuff[i]["cords"][0] + random.randint(-10, 10), VerySpecialStuff[i]["cords"][1] + random.randint(-10, 10)], [50], [[0, 0, 10]], 10, gravity=[True, -0.1, -0.1])
@@ -667,6 +667,7 @@ while True:
                 if len(VerySpecialStuff) == 0:
                     safeguard4 = False
             elif ticksm < 12500 and not safeguard4:
+                texttoprint = ["A GOD DOES NOT FEAR DEATH", 100]
                 safeguard4 = True
                 wormlength = 20
                 wormspeed = 3
@@ -683,20 +684,43 @@ while True:
             elif ticksm < 12500:
                 pass
             elif ticksm < 15800:
+                if (ticks)%250 == 0:
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addstuff("circle", WHITE, headcords, [25], [x*5 for x in makeunitvector([x-headcords[0], y-headcords[1]])], gravity=[True, -2, -2])
+                if (ticks+25)%200 == 0:
+                    pygame.mixer.Sound.play(laser_sound)
+                if (ticks)%200 == 0:
+                    addoverlaystuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 20], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [x, 550], [12, 50], [0, -20], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [-50, y], [50, 12], [20, 0], damage=12)
+                    addoverlaystuff("rect", LIGHTPURPLE, [650, y], [50, 12], [-20, 0], damage=12)
                 if ticks%1000 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     tickstotp = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["time"] + 250
-                if (ticks - 250)%1000 == 0:
+                if (ticks - 100)%1000 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, -0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, -0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0.1])
                 for i in list(VerySpecialStuff.keys()):
-                    if VerySpecialStuff[i]["time"] == tickstotp:
-                        VerySpecialStuff[i]["time"] += 600
+                    if VerySpecialStuff[i]["time"] > tickstotp and VerySpecialStuff[i]["time"] < (wormspeed + tickstotp):
+                        VerySpecialStuff[i]["time"] += 800
                         addspecialstuff("circle", [[LIGHTPURPLE, 100]], [VerySpecialStuff[i]["cords"][0] + random.randint(-10, 10), VerySpecialStuff[i]["cords"][1] + random.randint(-10, 10)], [50], [[0, 0, 10]], 10, gravity=[True, -0.1, -0.1])
-
+                        temptime = VerySpecialStuff[i]["time"] / 200
+                        unitvectvar = makeunitvector([(math.cos(temptime)), (math.sin(temptime))])
+                        goto = [x * 350 * math.sin(pi87 * temptime) for x in unitvectvar]
+                        print(VerySpecialStuff[i]["cords"])
+                        print([300 + goto[0], 250 + goto[1]])
+                        addspecialstuff("circle", [[LIGHTPURPLE, 100]],
+                                        [300 + goto[0] + random.randint(-10, 10),
+                                         250 + goto[1] + random.randint(-10, 10)],
+                                        [50], [[0, 0, 10]],
+                                        10, gravity=[True, -0.1, -0.1])
         
         texttoprint[1] -= 1
         if background == False:
