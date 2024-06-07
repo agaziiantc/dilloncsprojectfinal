@@ -348,9 +348,12 @@ while True:
                     #print(gravity)
                     #print(movement)
                     #print(VerySpecialStuff)
-                if event.key == pygame.K_x:
-                    
-                    addspecialstuff("circle", [[WHITE, 100]], [300, 500], [25], [[0, 0, 15000]], 10, [True, 0, 4])
+                if event.key == pygame.K_c:
+                    texttoprint = ["Challenge mode", 100]
+                    pygame.mixer.Sound.play(laugh_sound)
+                    addplatformstuff("rect", [[WHITE, 100]], [0, 400], [600, 10], [[0, 0, 25000]])
+                    addplatformstuff("rect", [[WHITE, 100]], [0, 200], [600, 10], [[0, 0, 25000]])
+                    addspecialstuff("circle", [[WHITE, 100]], [300, 500], [25], [[0, 0, 25000]], 10, [True, 0, 4])
                 if event.key == pygame.K_2:
                     offset = 3000 - ticksm
                 if event.key == pygame.K_3:
@@ -372,9 +375,6 @@ while True:
                     pos = pygame.mixer.music.set_pos(14000 / 60)
                 if event.key == pygame.K_h:
                     HP += 100
-                if event.key == pygame.K_a:
-                    addplatformstuff("rect", [[WHITE, 100]], [0, 400], [600, 10], [[0, 0, 15000]])
-                    addplatformstuff("rect", [[WHITE, 100]], [0, 200], [600, 10], [[0, 0, 15000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 000], [600, 20], [[0, 0, 1000]])
                     #addspecialstuff("rect", [[BLACK, 100]], [0, 400], [600, 20], [[0, 0, 1000]])
                 if event.key == pygame.K_d:
