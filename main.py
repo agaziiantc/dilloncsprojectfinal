@@ -46,7 +46,7 @@ pi87 = math.pi * 8 / 7
 #This is just here for when I add multiple screens in the future
 
 font = pygame.font.Font('freesansbold.ttf', 32)
-text = font.render('Choose a circle (red one is boring)', True, GREEN, BLACK)
+text = font.render('Choose a circle', True, WHITE, BLACK)
 textRect = text.get_rect()
 
 
@@ -185,10 +185,11 @@ def makeunitvector(vector):
 rvar = 10
 wormlength = 51
 wormspeed = 1
-mainmenu = False
+mainmenu = True
 movementground = False
 ground2 = False
-hyperfancystuff = True
+hyperfancystuff = False
+deathscreen = False
 background = False
 debug = False
 phase1 = True
@@ -203,7 +204,7 @@ while True:
         r2var = 10
         r3var = 10
         screen.fill(BLACK)
-        pygame.draw.circle(screen, RED, (WIDTH / 2, HEIGHT / 2), rvar)
+        #pygame.draw.circle(screen, RED, (WIDTH / 2, HEIGHT / 2), rvar)
         pygame.draw.circle(screen, ORANGE, (200, 250), r2var)
         pygame.draw.circle(screen, GREEN, (400, 250), r3var)
         for event in pygame.event.get():
@@ -212,26 +213,26 @@ while True:
                 sys.exit()
             if event.type == MOUSEBUTTONDOWN:
                 x1, y1 = pygame.mouse.get_pos()
-                if x1 > WIDTH / 2 - r and x1 < WIDTH / 2 + r and y1 < HEIGHT / 2 + r and y1 > HEIGHT / 2 - r:
-                    
-                    print(f"x: {x}, y: {y}")
-                    while rvar > 0:
-                        rvar -= 0.23
-                        screen.fill(BLACK)
-                        pygame.draw.circle(screen, RED, (WIDTH / 2, HEIGHT / 2), rvar)
-                        pygame.display.update()
-                    r = 10
-                    Stuff = {}
-                    SpecialStuff = {}
-                    ticks = 0
-                    HP = 100
-                    x, y = WIDTH / 2, HEIGHT / 2
-                    movementsbool = [False, False, False, False]
-                    movement = [0, 0]
-                    mainmenu = False
-                    movementground = True
-                    COLOR = RED
-                    pygame.mixer.music.set_volume(0.5)
+                #if x1 > WIDTH / 2 - r and x1 < WIDTH / 2 + r and y1 < HEIGHT / 2 + r and y1 > HEIGHT / 2 - r:
+                #    
+                #    print(f"x: {x}, y: {y}")
+                #    while rvar > 0:
+                #        rvar -= 0.23
+                #        screen.fill(BLACK)
+                #        pygame.draw.circle(screen, RED, (WIDTH / 2, HEIGHT / 2), rvar)
+                #        pygame.display.update()
+                #    r = 10
+                #    Stuff = {}
+                #    SpecialStuff = {}
+                #    ticks = 0
+                #    HP = 100
+                #    x, y = WIDTH / 2, HEIGHT / 2
+                #    movementsbool = [False, False, False, False]
+                #    movement = [0, 0]
+                #    mainmenu = False
+                #    movementground = True
+                #    COLOR = RED
+                #    pygame.mixer.music.set_volume(0.5)
                 if x1 > 200 - r and x1 < 200 + r and y1 < 250 + r and y1 > 250 - r:
                     while r2var > 0:
                         r2var -= 0.223
@@ -289,6 +290,60 @@ while True:
         pygame.display.update()
         clock.tick(FPS)
         
+    #Death screen
+    while deathscreen:
+        ticks += 1
+        pygame.mixer.music.stop()
+        screen.fill(BLACK)
+        if ticks < 15:
+            pygame.draw.circle(screen, COLOR, (x, y), r)
+        elif ticks == 16:
+            for i in range(150):
+                addstuff("circle", COLOR, [x, y], [2],[random.uniform(-8, 8), random.uniform(-8, 8)])
+        elif ticks == 100:
+            deathscreen = False
+            mainmenu = True
+        
+        stf = 0  #just a counter variable
+        for i in list(Stuff.keys()):
+            Stuff[i]["cords"] = [Stuff[i]["cords"][0] + Stuff[i]["vector"][0],Stuff[i]["cords"][1] + Stuff[i]["vector"][1]]
+            addstf = True
+            if Stuff[i]["cords"][0] > WIDTH + 100 or Stuff[i]["cords"][0] < -100 or Stuff[i]["cords"][1] > HEIGHT + 100 or Stuff[i]["cords"][1] < -100:
+                del Stuff[i]
+                continue
+
+            #draw the stuff + collisions (because of course circles are centered but rectangles aren't, which makes sense but still is annoying)
+            if "rect" in i:
+                pygame.draw.rect(screen, Stuff[i]["color"], (Stuff[i]["cords"][0], Stuff[i]["cords"][1], Stuff[i]["size"][0], Stuff[i]["size"][1]))
+                if Stuff[i]["cords"][0] <= x and (Stuff[i]["cords"][0] + Stuff[i]["size"][0]) >= x and Stuff[i]["cords"][1] <= y and (Stuff[i]["cords"][1] + Stuff[i]["size"][1]) >= y:
+                    #print("collision with rect obj")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= 5
+                        iframes = 10
+
+            if "circle" in i:
+                pygame.draw.circle( screen, Stuff[i]["color"], (Stuff[i]["cords"][0], Stuff[i]["cords"][1]), Stuff[i]["size"][0])
+                if (Stuff[i]["cords"][0] + Stuff[i]["size"][0] > x and Stuff[i]["cords"][0] - Stuff[i]["size"][0] < x) and (Stuff[i]["cords"][1] + Stuff[i]["size"][0] > y and Stuff[i]["cords"][1] - Stuff[i]["size"][0] < y):
+                    #print("collision with circle obj")
+                    #print("y collision")
+                    if iframes <= 0:
+                        print("insert damage here")
+                        HP -= 5
+                        iframes = 10
+
+            #will not implement arc collision because I will not be using them for anything other than backgrounds
+            if "arc" in i:
+                pygame.draw.arc(screen, Stuff[i]["color"], (Stuff[i]["cords"][0], Stuff[i]["cords"][1], Stuff[i]["size"][0], Stuff[i]["size"][1]), 0,math.pi * 2)
+
+            #accelerate stuff with the "accel" tag
+            if "accel" in i:
+                Stuff[i]["vector"] = [Stuff[i]["vector"][0] * 1.05,Stuff[i]["vector"][1] * 1.05]
+
+
+            stf += 1
+        pygame.display.update()
+        clock.tick(FPS)
         
     #Green
     while hyperfancystuff:
@@ -1180,11 +1235,19 @@ while True:
             y = HEIGHT
         if y < 0:
             y = 0
-        #Draw healthbar:
+        #Draw healthbar + player:
         if HP > 0:
             pygame.draw.rect(screen, COLOR, (0, 10, HP, 20))
             pygame.draw.polygon(screen, COLOR, [(HP, 10), (HP + 2*math.log(HP,2), 10), (HP, 29)])
-        pygame.draw.circle(screen, COLOR, (x, y), r)
+            pygame.draw.circle(screen, COLOR, (x, y), r)
+        if HP <= 0:
+            hyperfancystuff = False
+            deathscreen = True
+            ticks = 0
+            VerySpecialStuff = {}
+            SpecialStuff = {}
+            Stuff = {}
+            COLOR = GREEN
         
         pygame.display.update()
         CD -= 0.1
@@ -1194,6 +1257,7 @@ while True:
         
         if timetaken > 0.1:
             print(f"Long frame! {timetaken}")
+        
         #if HP <= 0:
             #pygame.mixer.music.stop()
             #print("l")
@@ -1776,12 +1840,13 @@ while True:
         if timetaken > 0.1:
             print(f"Long frame! {timetaken}")
         if HP <= 0:
-            pygame.mixer.music.stop()
-            print("l")
-            movementground = False
-            mainmenu = True
             ground2 = False
-            COLOR = (255, 0, 0)
+            deathscreen = True
+            ticks = 0
+            VerySpecialStuff = {}
+            SpecialStuff = {}
+            Stuff = {}
+            COLOR = ORANGE
         
         
         
@@ -2294,6 +2359,7 @@ while True:
             mainmenu = True
             COLOR = (255, 0, 0)
         #print(f"Frame time: {time.time() - timev}")
+
 
 
 
