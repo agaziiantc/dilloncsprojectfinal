@@ -278,6 +278,10 @@ while True:
                     hyperfancystuff = True
                     phase1 = True
                     phase2 = False
+                    phase3 = False
+                    BG = WHITE
+                    wormspeed = 1
+                    wormlength = 51
                     COLOR = GREEN
                     texttoprint = ["", 0]
                     #pygame.mixer.music.load('funnylimbosong.wav')
