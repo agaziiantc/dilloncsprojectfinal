@@ -506,7 +506,7 @@ while True:
         ticksm = int((60 / 1000) * pos) + offset#ticksm = music based ticks
         if phase1:
             #really short because phase 1 is boring and I cannot be bothered to make it not boring
-            if ticksm < 2400:
+            if ticksm < 600:
                 
                 if ticks == 100:
                     pygame.mixer.Sound.play(spawn_sound)
@@ -828,7 +828,7 @@ while True:
             partlist = list(VerySpecialStuff.keys()) #yes I know this is unoptimized but at this point I do not care
             partlist.reverse()
             if BG[0] < 255 and BG[1] < 255 and BG[2] < 255:
-                BG = (BG[0] + 0.5, BG[1] + 0.5, BG[2] + 0.5)
+                BG = (BG[0] + 0.8, BG[1] + 0.8, BG[2] + 0.8)
             else:
                 BG = (255, 255, 255)
             for i in list(VerySpecialStuff.keys()):
@@ -842,12 +842,22 @@ while True:
                         pygame.mixer.Sound.play(break3)
                     elif randvar == 4:
                         pygame.mixer.Sound.play(break4)
+                    for j in range(int(10 / wormspeed)):
+                        addspecialstuff("circle", [[PURPLE,100]], VerySpecialStuff[partlist[-1]]["cords"], [4], [[random.uniform(-2, 2), random.uniform(-2, 2), random.randint(360,600)]], damage=1)
                     del VerySpecialStuff[partlist[-1]]
+
                     wormspeed -= 0.14
                     ticksfadeout += wormspeed * 20
             if len(VerySpecialStuff) == 0:
                 pygame.mixer.Sound.play(death)
                 phase3 = False
+                ticks = 0
+        else:
+            texttoprint = ["You win", 60]
+            if ticks > 1200:
+                hyperfancystuff = False
+                mainmenu = True
+
         #reminder to do death animation at 15000 ticksm
         texttoprint[1] -= 1
         screen.fill(BG)
@@ -1245,6 +1255,7 @@ while True:
             pygame.draw.polygon(screen, COLOR, [(HP, 10), (HP + 2*math.log(HP,2), 10), (HP, 29)])
             pygame.draw.circle(screen, COLOR, (x, y), r)
         if HP <= 0:
+            pygame.mixer.Sound.play(laugh_sound)
             hyperfancystuff = False
             deathscreen = True
             ticks = 0
