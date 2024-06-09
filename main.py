@@ -506,7 +506,7 @@ while True:
         ticksm = int((60 / 1000) * pos) + offset#ticksm = music based ticks
         if phase1:
             #really short because phase 1 is boring and I cannot be bothered to make it not boring
-            if ticksm < 600:
+            if ticksm < 2400:
                 
                 if ticks == 100:
                     pygame.mixer.Sound.play(spawn_sound)
@@ -522,13 +522,12 @@ while True:
                 elif ticks > 100:
                     if len(VerySpecialStuff) > 0:
                         ticksfadeout = VerySpecialStuff[list(VerySpecialStuff.keys())[0]]["time"] + 180
-                    if (ticks+50)%500 == 0:
+                    if ticks%500 == 0:
                         pygame.mixer.Sound.play(laser_sound)
-                    if ticks%500 == 0:    
-                        addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
-                        addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
-                        addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
-                        addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                        addspecialstuff("rect", [[LIGHTPURPLE,100]], [x, -400], [10, 50], [[0, 15, 100]])
+                        addspecialstuff("rect", [[LIGHTPURPLE,100]], [x, 900], [10, 50], [[0, -15, 100]])
+                        addspecialstuff("rect", [[LIGHTPURPLE,100]], [-400, y], [50, 10], [[15, 0, 100]])
+                        addspecialstuff("rect", [[LIGHTPURPLE,100]], [900, y], [50, 10], [[-15, 0, 100]])
                     if (ticks+150)%1500 == 0:
                         wormspeed = 2
                     if (ticks)%1500 == 0:
@@ -561,13 +560,12 @@ while True:
                 pygame.mixer.music.set_volume(0.3)                                     
                 pygame.mixer.music.play(1)
             elif ticksm < 300:
-                if (ticks+50)%100 == 0:
+                if ticks%100 == 0:
                     pygame.mixer.Sound.play(laser_sound)
-                if ticks%100 == 0:    
-                    addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
-                    addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
-                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
-                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[15, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-15, 0, 100]])
             elif ticksm < 540:
                 if ticks%5 == 0:
                     print(ticksm)
@@ -583,24 +581,22 @@ while True:
                     addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose2curve", damage=5, timecounter=(99+ 4 * i)*wormspeed, sprited=[True, body2])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromfarleft rose2curve", damage=35, timecounter=(99 + wormlength * 4)*wormspeed, sprited=[True, head2])
             elif ticksm < 1500:
-                if (ticks+50)%500 == 0:
+                if ticks%500 == 0:
                     pygame.mixer.Sound.play(laser_sound)
-                if ticks%500 == 0:    
-                    addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
-                    addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
-                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
-                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[15, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-15, 0, 100]])
             #bossfight lasts until ticks = 15360
             elif ticksm < 1600:
                 wormspeed = 3
             elif ticksm < 3500:
-                if (ticks+50)%500 == 0:
+                if ticks%500 == 0:
                     pygame.mixer.Sound.play(laser_sound)
-                if ticks%500 == 0:    
-                    addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
-                    addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
-                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
-                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 18, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -18, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[18, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-18, 0, 100]])
                 if (ticks+250)%1500 == 0:
                     #pygame.mixer.Sound.play(laugh_sound)
                     wormspeed = 6
@@ -645,24 +641,23 @@ while True:
                     addveryspecialstuff("circle", [[BLUE, 100]], [-1200, 250], [35], "movetocenterfromfarleft rose3curve", damage=5, timecounter=(99+ 4 * i)*wormspeed, sprited=[True, body2])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromfarleft rose3curve", damage=35, timecounter=(99 + wormlength * 4)*wormspeed, sprited=[True, head2])
             elif ticksm < 5600:
-                if (ticks+50)%500 == 0:
+                if ticks%500 == 0:
                     pygame.mixer.Sound.play(laser_sound)
-                if ticks%500 == 0:    
-                    addstuff("rect", LIGHTPURPLE, [x, -50], [10, 50], [0, 15])
-                    addstuff("rect", LIGHTPURPLE, [x, 550], [10, 50], [0, -15])
-                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 10], [15, 0])    
-                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 10], [-15, 0])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[15, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-15, 0, 100]])
                 if (ticks)%250 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     addstuff("circle", WHITE, headcords, [25], [x*5 for x in makeunitvector([x-headcords[0], y-headcords[1]])], gravity=[True, -2, -2])
             elif ticksm < 7150:
-                if (ticks+50)%300 == 0:
+
+                if ticks%300 == 0:
                     pygame.mixer.Sound.play(laser_sound)
-                if ticks%300 == 0:    
-                    addstuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 16])
-                    addstuff("rect", LIGHTPURPLE, [x, 550], [12, 50], [0, -16])
-                    addstuff("rect", LIGHTPURPLE, [-50, y], [50, 12], [16, 0])    
-                    addstuff("rect", LIGHTPURPLE, [650, y], [50, 12], [-16, 0])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 16, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -16, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[16, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-16, 0, 100]])
                 if (ticks+250)%750 == 0:
                     #pygame.mixer.Sound.play(laugh_sound)
                     wormspeed = 8
@@ -701,7 +696,7 @@ while True:
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromtop rose4curve",
                                     damage=45, timecounter=(99 + wormlength * 4) * wormspeed, sprited=[True, head2])
             elif ticksm < 8000:
-                if (ticks+55)%200 == 0:
+                if (ticks+45)%200 == 0:
                     pygame.mixer.Sound.play(laser_sound)
                 if (ticks+30)%200 == 0:
                     addoverlaystuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 18], damage=10)
@@ -715,7 +710,7 @@ while True:
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
                     addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
             elif ticksm < 11400:
-                if (ticks+55)%200 == 0:
+                if (ticks+45)%200 == 0:
                     pygame.mixer.Sound.play(laser_sound)
                 if (ticks+30)%200 == 0:
                     addoverlaystuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 18], damage=10)
@@ -763,13 +758,12 @@ while True:
                 if (ticks)%250 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     addstuff("circle", WHITE, headcords, [25], [x*5 for x in makeunitvector([x-headcords[0], y-headcords[1]])], gravity=[True, -2, -2])
-                if (ticks+25)%200 == 0:
-                    pygame.mixer.Sound.play(laser_sound)
                 if (ticks)%200 == 0:
-                    addoverlaystuff("rect", LIGHTPURPLE, [x, -50], [12, 50], [0, 20], damage=12)
-                    addoverlaystuff("rect", LIGHTPURPLE, [x, 550], [12, 50], [0, -20], damage=12)
-                    addoverlaystuff("rect", LIGHTPURPLE, [-50, y], [50, 12], [20, 0], damage=12)
-                    addoverlaystuff("rect", LIGHTPURPLE, [650, y], [50, 12], [-20, 0], damage=12)
+                    pygame.mixer.Sound.play(laser_sound)
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -15, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[15, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-15, 0, 100]])
                 if (ticks)%300 == 0:
                     pygame.mixer.Sound.play(laser_sound)
                     localheadcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
@@ -1008,8 +1002,10 @@ while True:
                         offsetx, offsety = VerySpecialStuff[i]["sprited"][1].get_size()
                     else:
                         offsetx, offsety = 0, 0
-                    deltaX = goto[0] - unitvectvar[0]
-                    deltaY = goto[1] - unitvectvar[1]
+                    deltaX = goto[0] - (unitvectvar[0])
+                    deltaY = goto[1] - (unitvectvar[1])
+                    #deltaX = unitvectvar[0]
+                    #deltaY = unitvectvar[1]
                     angle = math.atan2(deltaX, deltaY) *180 / math.pi
                     screen.blit(pygame.transform.rotate(VerySpecialStuff[i]["sprited"][1], angle), [300 + goto[0] - offsetx / 2, 250 + goto[1] - offsety / 2])
             elif "rose2curve" in VerySpecialStuff[i]["pathing"]:
