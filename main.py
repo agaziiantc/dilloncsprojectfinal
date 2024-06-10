@@ -235,7 +235,7 @@ while True:
                 #    pygame.mixer.music.set_volume(0.5)
                 if x1 > 200 - r and x1 < 200 + r and y1 < 250 + r and y1 > 250 - r:
                     while r2var > 0:
-                        r2var -= 0.223
+                        r2var -= 0.093
                         screen.fill(BLACK)
                         pygame.draw.circle(screen, ORANGE, (200, 250), r2var)
                         pygame.display.update()
@@ -253,14 +253,14 @@ while True:
                     COLOR = ORANGE
                     texttoprint = ["", 0]
                     pygame.mixer.music.load('funnylimbosong.wav')
-                    pygame.mixer.music.set_volume(0.3)
+                    pygame.mixer.music.set_volume(1)
                                                     
                     pygame.mixer.music.play(1)
                     safeguard = False
                 if x1 > 400 - r and x1 < 400 + r and y1 < 250 + r and y1 > 250 - r:
                     print("aaaaaaa")
                     while r3var > 0:
-                        r3var -= 0.2
+                        r3var -= 0.09
                         screen.fill(BLACK)
                         pygame.draw.circle(screen, GREEN, (400, 250), r3var)
                         pygame.display.update()
@@ -506,7 +506,7 @@ while True:
         ticksm = int((60 / 1000) * pos) + offset#ticksm = music based ticks
         if phase1:
             #really short because phase 1 is boring and I cannot be bothered to make it not boring
-            if ticksm < 2400:
+            if ticksm < 400:
                 
                 if ticks == 100:
                     pygame.mixer.Sound.play(spawn_sound)
@@ -742,6 +742,7 @@ while True:
                 wormlength = 20
                 wormspeed = 3
                 tickstotp = 0
+
                 addspecialstuff("circle", [[WHITE, 100]], [300, -50], [25], [[0, 0, 30]], 10, [True, -10, -10])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [35], "movetocenterfromtop rose4curve",
                                     damage=45, timecounter=97 * wormspeed, sprited=[True, tail2])
@@ -751,19 +752,30 @@ while True:
                                         timecounter=(99 + 4 * i) * wormspeed, sprited=[True, body2])
                 addveryspecialstuff("circle", [[RED, 100]], [-1200, 250], [40], "movetocenterfromtop rose4curve",
                                     damage=45, timecounter=(99 + wormlength * 4) * wormspeed, sprited=[True, head2])
-            elif ticksm < 12500:
+                headcords2 = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+            elif ticksm < 12300:
                 pass
             elif ticksm < 14950:
                 HP += 0.05
                 if (ticks)%250 == 0:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     addstuff("circle", WHITE, headcords, [25], [x*5 for x in makeunitvector([x-headcords[0], y-headcords[1]])], gravity=[True, -2, -2])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
+                if (ticks+80)%250 == 0:
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addstuff("circle", WHITE, headcords, [25], [x*-5 for x in makeunitvector([x-headcords[0], y-headcords[1]])], gravity=[True, -2, -2])
+                if (ticks+160)%250 == 0:
+                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addstuff("circle", PURPLE, headcords, [25], [x*8 for x in makeunitvector([x-headcords[0], y-headcords[1]])])
                 if (ticks)%200 == 0:
                     pygame.mixer.Sound.play(laser_sound)
-                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 15, 100]])
-                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -15, 100]])
-                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[15, 0, 100]])
-                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-15, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, -400], [10, 50], [[0, 17, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [x, 900], [10, 50], [[0, -17, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [-400, y], [50, 10], [[17, 0, 100]])
+                    addspecialstuff("rect", [[LIGHTPURPLE, 100]], [900, y], [50, 10], [[-17, 0, 100]])
                 if (ticks)%300 == 0:
                     pygame.mixer.Sound.play(laser_sound)
                     localheadcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
@@ -789,15 +801,24 @@ while True:
                     headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
                     tickstotp = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["time"] + 250
                 if (ticks - 80)%900 == 0:
-                    headcords = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, 0.1])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0, -0.1])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, -0.1])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, -0.1])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [-0.1, 0.1])
-                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords, [25], [0.1, 0.1])
+                    headcords2 = VerySpecialStuff[list(VerySpecialStuff.keys())[-1]]["cords"]
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [-0.1, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0, -0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [-0.1, -0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0.1, -0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [-0.1, 0.1])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0.1, 0.1])
+                if (ticks - 120) % 900 == 0:
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0.05, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [-0.05, 0])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0, 0.05])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0, -0.05])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [-0.05, -0.05])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0.05, -0.05])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [-0.05, 0.05])
+                    addoverlaystuff("accelcircle", LIGHTPURPLE, headcords2, [25], [0.05, 0.05])
                 for i in list(VerySpecialStuff.keys()):
                     if VerySpecialStuff[i]["time"] > tickstotp and VerySpecialStuff[i]["time"] < (wormspeed + tickstotp):
                         VerySpecialStuff[i]["time"] += 800
